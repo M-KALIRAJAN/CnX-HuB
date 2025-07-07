@@ -1,0 +1,39 @@
+.sidebar {
+   background-color: #F5F0F9;
+}
+.background {
+    background-color: #F8F8F8;
+}
+.color{
+  background-color: #905CC1;
+}
+.totalsend{
+    background-color: #B3D0FF;
+    color: #3B70C7;
+}
+.delivered{
+    background-color: #CDD4FD;
+    color: #4153BC;
+}
+.read{
+    background-color: #EFCEFE;
+    color: #A037CF; 
+}
+.failed{
+    background-color: #C5F6D1;
+    color: #2AB17B; 
+}
+.txtclor{
+    color: #59565C;
+}
+
+/* Sidebar */ 
+.iconbackground{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 38px;
+    width: 38px;
+    border-radius: 100%;
+    background-color: white;
+}
