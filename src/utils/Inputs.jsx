@@ -6,11 +6,13 @@ export default function Inputs({ label, type = "text", name, value, onChange,pla
   useEffect(() => {
     if (value === "") {
       setError("");
-    } else if (type === "email") {
-      const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-      setError(isValid ? "" : "Invalid email address");
-    } else if (type === "password") {
-      setError(value.length >= 6 ? "" : "Password must be at least 6 characters");
+    } else if (type === "number") {
+  const isValid = /^[0-9]+$/.test(value); // only digits allowed
+  setError(isValid ? "" : "Invalid number");
+
+
+    } else if (type === "otp") {
+      setError(value.length >= 6 ? "" : "otp must be at least 6 characters");
     } else {
       setError("");
     }

@@ -37,3 +37,8 @@
     border-radius: 100%;
     background-color: white;
 }
+
+/* FONT */
+.font {
+  font-family: 'Satoshi', sans-serif;
+}

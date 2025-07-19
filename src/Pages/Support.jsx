@@ -7,6 +7,10 @@ import SupportCart from '../components/card/SupportCart';
 import rocket from "../assets/rocket.svg";
 import Down from "../assets/Down.svg";
 import File from "../assets/file.svg";
+import Security from "../assets/security.svg";
+import Headset from "../assets/headset.svg";
+import Arrow from "../assets/arrow.svg";
+import { IoIosArrowDropright } from "react-icons/io";
 export default function Support() {
   const [search, setSearch] = useState("");
 
@@ -14,25 +18,43 @@ export default function Support() {
     {
       icon: rocket,
       title: "Getting Started",
-      actionText: "See details",
-      actionIcon: Down,
+     actionText: (
+      <span className="flex items-center gap-1.5 text-[#905CC1]">
+        See details
+        <IoIosArrowDropright />
+      </span>
+    ),
+     
     },
     {
-      icon: rocket,
-      title: "How It Works",
-      actionText: "Learn more",
-      actionIcon: Down,
+      icon: Security,
+      title: "Security & Production",
+  actionText: (
+      <span className="flex items-center gap-1.5 text-[#905CC1]">
+        See details
+        <IoIosArrowDropright />
+      </span>
+    ), 
+
     },
     {
-      icon: rocket,
-      title: "Need Support?",
-      actionText: "Contact us",
-      actionIcon: Down,
+      icon: Headset,
+      title: "Troubleshooting & Support",
+  actionText: (
+      <span className="flex items-center gap-1.5 text-[#905CC1]">
+        See details
+        <IoIosArrowDropright />
+      </span>
+    ),
+      
     },
   ];
 
   return (
-    <div className='border border-gray-400 h-auto w-full p-3 rounded-2xl'>
+    <div className='border border-gray-400 h-auto w-full p-3 rounded-2xl'
+            data-aos="zoom-in"
+    data-aos-duration="1000"
+    >
       <h2 className="font-bold text-center text-[26px]">Get the help you need</h2>
       <p className="text-gray-400 w-[470px] text-center m-auto mt-2">
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, consectetur nesciunt et corrupti tempore aperiam...
@@ -69,16 +91,22 @@ export default function Support() {
       <div className="m-7">
      <h2 className="font-medium" >Top Artiles</h2>
 
-     <div className="h-[140px] w-full rounded-2xl bg-[#F8F8F8] flex  items-center gap-8 p-5 mt-4"> 
-      <div className="iconbackground">
- <img src={File}/>
-      </div>
-      <div>
-        <h3 >Lorem ipsum dolor</h3> 
-        <p className="flex-wrap w-[770px] text-gray-400 mt-5">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Totam quidem quisquam dolore rerum natus qui alias numquam. Nesciunt eaque ipsam dicta accusamus provident quos ducimus quasi, facilis, veritatis est dolores?</p>
-      </div>
-     
-     </div>
+ <div className="h-auto w-full rounded-2xl bg-[#F8F8F8] flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8 p-5 mt-4"
+
+ >
+  <div className="iconbackground shrink-0">
+    <img src={File} className="w-12 h-12 object-contain" alt="file" />
+  </div>
+
+  <div className="flex flex-col">
+    <h3 className="text-base md:text-lg font-semibold">Lorem ipsum dolor</h3>
+    
+    <p className="overflow-hidden text-gray-400 mt-2 md:mt-5 max-w-full md:max-w-[770px] line-clamp-3">
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Totam quidem quisquam dolore rerum natus qui alias numquam. Nesciunt eaque ipsam dicta accusamus provident quos ducimus quasi, facilis, veritatis est dolores?
+    </p>
+  </div>
+</div>
+
       </div>
 
 

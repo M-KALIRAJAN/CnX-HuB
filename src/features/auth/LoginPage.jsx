@@ -1,85 +1,99 @@
 import { useState } from "react";
 import Inputs from "../../utils/Inputs";
-import Apple from "../../assets/Apple.svg"
-import Fb from "../../assets/Fb.svg"
-import Google from "../../assets/Google.svg"
-export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+import Apple from "../../assets/Apple.svg";
+import Fb from "../../assets/Fb.svg";
+import Google from "../../assets/Google.svg";
+import { useNavigate } from "react-router-dom";
+import { login } from "../../api/ApiServices";
+import { motion } from "framer-motion";
 
-  const handleLogin = (e) => {
+export default function LoginPage() {
+  const [number, setNumber] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (email && password) {
-      console.log("Login with:", { email, password });
-    } else {
-      console.log("Validation failed");
+    try {
+      const data = await login({ phone: number });
+      console.log("Login Success:", data);
+      navigate("/otp", { state: { phone: number } });
+    } catch (err) {
+      console.error("Login Failed:", err);
     }
   };
 
+  const goToCreateAccount = () => {
+    navigate("/Register");
+  };
+
   return (
-   <div className="flex justify-center items-center min-h-screen ">
-  <div className=" p-6 rounded  w-full max-w-sm">
-    <form onSubmit={handleLogin}>
-      <h2 className="text-[18px] font-bold mb-6 text-center">Welcome!</h2>
-
-      <Inputs
-        label="Email"
-        name="email"
-        type="email"
-        placeholder="Enter the Email"
-        value={email}
-        onChange={setEmail}
-      />
-
-      <Inputs
-        label="Password"
-        name="password"
-        type="password"
-        placeholder="Enter the Password"
-        value={password}
-        onChange={setPassword}
-      />
-
-      <div className="w-full text-right mb-2">
-        <p className="text-sm text-[#905CC1] hover:underline cursor-pointer font-medium text-[12px]">
-          Forgot Password?
-        </p>
-      </div>
-
-      <button
-        type="submit"
-        className="w-full h-[45px] text-white color rounded-sm"
+    <div className="flex gap-5 justify-around items-center min-h-screen bg-gray-100 px-4">
+      {/* Left Panel */}
+      <motion.div
+        initial={{ opacity: 0, x: -60 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6 }}
+        className="hidden md:flex w-[756px] h-[600px] bg-[#FBF6FF] rounded-2xl justify-center items-center"
       >
-        Login
-      </button>
-    </form>
-
-    
-    <div className="flex items-center my-6">
-      <div className="flex-grow border-t border-gray-300"></div>
-      <span className="mx-4 text-gray-500 text-sm">or continue with</span>
-      <div className="flex-grow border-t border-gray-300"></div>
-    </div>
      
-<div className="flex justify-center gap-5">
-  {/* Apple */}
-  <div className="w-[60px] h-[45px] sidebar rounded-sm shadow-xl flex justify-center items-center">
-    <img src={Apple} alt="Apple logo" className="w-6 h-6" />
-  </div>
+      </motion.div>
 
-  {/* Google */}
-  <div className="w-[60px] h-[45px] bg-white rounded-sm shadow-xl flex justify-center items-center">
-    <img src={Google} alt="Google logo" className="w-6 h-6" />
-  </div>
+      {/* Right Panel */}
+      <motion.div
+        initial={{ opacity: 0, y: 60 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="p-6 rounded-2xl bg-white w-full max-w-sm shadow-md"
+      >
+        <form onSubmit={handleLogin}>
+          <motion.h2
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-[18px] font-bold mb-6 text-center"
+          >
+            Login With OTP!
+          </motion.h2>
 
-  {/* Facebook */}
-  <div className="w-[60px] h-[45px] bg-white rounded-sm shadow-xl flex justify-center items-center">
-    <img src={Fb} alt="Facebook logo" className="w-30 h-31" />
-  </div>
-</div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <Inputs
+              label="Number"
+              name="phone"
+              type="phone"
+              placeholder="Enter the number"
+              value={number}
+              onChange={setNumber}
+            />
+          </motion.div>
 
-  </div>
-</div>
+          <motion.button
+            type="submit"
+            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.03 }}
+            className="w-full h-[45px] text-white bg-[#905CC1] rounded-sm hover:bg-[#7a3fb8] transition mt-4"
+          >
+            Send OTP
+          </motion.button>
 
+          <motion.div
+            className="w-full text-center mb-2 mt-5"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
+            <h2
+              className="text-sm text-[#905CC1] hover:underline cursor-pointer font-medium"
+              onClick={goToCreateAccount}
+            >
+              <span>New User?</span> Create Account
+            </h2>
+          </motion.div>
+        </form>
+      </motion.div>
+    </div>
   );
 }
