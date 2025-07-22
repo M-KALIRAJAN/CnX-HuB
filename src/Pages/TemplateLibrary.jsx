@@ -10,6 +10,7 @@ import Table from "../utils/Table";
 import { TemplateHistroy } from "../api/ApiServices";
 export default function TemplateLibrary() {
   const [search, setSearch] = useState("");
+    const [loading, setLoading] = useState(true);
   const templateOptions = [
     { value: "Select Category", label: "Select Category" },
     { value: "+1", label: "+1" },
@@ -35,6 +36,7 @@ export default function TemplateLibrary() {
   const user_id = localStorage.getItem("user_id");
   useEffect(() => {
     const fetchTemplate = async () => {
+       setLoading(true);
       const response = await TemplateHistroy(user_id);
       if (response?.status === "success") {
         const formatted = response.templates.map((template) => ({
@@ -67,6 +69,7 @@ export default function TemplateLibrary() {
         }));
         setTableData(formatted);
       }
+      setLoading(false);
     };
     fetchTemplate();
   }, []);
@@ -125,7 +128,14 @@ export default function TemplateLibrary() {
         </div>
       </div>
       <div className="mt-8 w-auto h-auto bg-[#F8F8F8] p-2 rounded-2xl ">
-        <Table headers={headers} columns={columns} data={tableData} />
+               {loading ? (
+          <div className="text-center py-8 text-gray-600 font-semibold animate-pulse">
+            ⏳ Loading templates...
+          </div>
+        ) : (
+          <Table headers={headers} columns={columns} data={tableData} />
+        )}
+
       </div>
     </div>
   );

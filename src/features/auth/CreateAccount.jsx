@@ -3,6 +3,7 @@ import Inputs from "../../utils/Inputs";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CreateAccounts, login, OTP, Register } from "../../api/ApiServices";
+import { debugLog } from "../../utils/debugLog";
 
 export default function CreateAccount() {
   const [fullname, setName] = useState("");
@@ -58,10 +59,10 @@ export default function CreateAccount() {
     };
     try {
       const res = await CreateAccounts(accountdata);
-      console.log("Account Created:", res);
+
       navigate("/dashboard")
     } catch (e) {
-      console.log("Account create error:", e.message);
+      debugLog("Account create error:", e.message);
     }
   };
 

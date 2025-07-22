@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "../card/Card";
 
 import Totalsent from "../../assets/Totalsent.svg";
@@ -15,8 +15,19 @@ import { BsJournalBookmarkFill } from "react-icons/bs";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import CountUp from "react-countup";
+import { Dashboard } from "../../api/ApiServices";
 
 export default function DashboardPage() {
+  const [dashboardData, setDashboardData] = useState({
+    status_summary: {},
+    wallet_balance: 0,
+    template_count: 0,
+    total_contacts: 0,
+    recent_activity: [],
+    chart_labels: [],
+    messages_sent_chart: [],
+    delivery_chart_data:[]
+  });
   useEffect(() => {
     AOS.init({
       duration: 1000, // animation duration in ms
@@ -24,15 +35,26 @@ export default function DashboardPage() {
     });
   }, []);
 
-  const activityData = [
-    { id: 1, message: "Read To 877586867", date: "June 7" },
-    { id: 2, message: "Delivered To 987654321", date: "June 8" },
-    { id: 3, message: "Failed To 123456789", date: "June 9" },
-    { id: 4, message: "Read To 9988776655", date: "June 10" },
-    { id: 5, message: "Sent To 1122334455", date: "June 11" },
-    { id: 6, message: "Read To 7788990011", date: "June 12" },
-    { id: 7, message: "Delivered To 6677889900", date: "June 13" },
-  ];
+  useEffect(() => {
+    const Dashboard_data = async () => {
+      const user_id = localStorage.getItem("user_id");
+      const res = await Dashboard(user_id);
+      setDashboardData(res);
+    };
+    Dashboard_data();
+  }, []);
+
+  const {
+    status_summary = {},
+    wallet_balance = 0,
+    template_count = 0,
+    total_contacts = 0,
+    recent_activity = [],
+    chart_labels = [],
+    messages_sent_chart = [],
+    delivery_chart_data=[]
+  } = dashboardData;
+
   return (
     <div className="max-h-full max-w-full p-3">
       {/* Top Cards Section */}
@@ -40,7 +62,7 @@ export default function DashboardPage() {
         {/* Left */}
         <Card
           text="Total Send"
-          count="1300"
+          count={status_summary.total_sent || 0}
           image={Totalsent}
           bgColor="bg-[#B3D0FF]"
           textColor="text-[#3B70C7]"
@@ -51,7 +73,7 @@ export default function DashboardPage() {
         {/* Center */}
         <Card
           text="Delivered"
-          count="1400"
+          count={status_summary.delivered || 0}
           image={Delivered}
           bgColor="bg-[#CDD4FD]"
           textColor="text-[#4153BC]"
@@ -62,7 +84,7 @@ export default function DashboardPage() {
         {/* Right */}
         <Card
           text="Read"
-          count="400"
+          count={status_summary.read || 0}
           image={Read}
           bgColor="bg-[#EFCEFE]"
           textColor="text-[#A037CF]"
@@ -73,7 +95,7 @@ export default function DashboardPage() {
         {/* Extra card – fade-left again with more delay */}
         <Card
           text="Failed"
-          count="1300"
+          count={status_summary.failed || 0}
           image={Failed}
           bgColor="bg-[#C5F6D1]"
           textColor="text-[#2AB17B]"
@@ -90,7 +112,10 @@ export default function DashboardPage() {
             <h2 className="font-bold text-[#59565C]">
               Message Send (Last 7 days)
             </h2>
-            <LineChart />
+            <LineChart
+              chartLabels={dashboardData.chart_labels}
+              messagesSentChart={dashboardData.messages_sent_chart}
+            />
           </div>
 
           {/* Read Chart */}
@@ -98,7 +123,9 @@ export default function DashboardPage() {
             <h2 className="font-bold text-center mb-5 text-[#59565C]">
               Read Chart
             </h2>
-            <ReadRateChart />
+            <ReadRateChart
+             delivery_chart_data={dashboardData.delivery_chart_data}
+             />
           </div>
 
           {/* Wallet Info */}
@@ -113,7 +140,12 @@ export default function DashboardPage() {
                   <div>
                     <p className="text-sm text-gray-600">Wallet Balance</p>
                     <p className="text-2xl font-bold text-[#9B5CE0]">
-                      ₹<CountUp end={20000} duration={1.5} separator="," />
+                      ₹
+                      <CountUp
+                        end={wallet_balance}
+                        duration={1.5}
+                        separator=","
+                      />
                     </p>
                   </div>
                 </div>
@@ -128,7 +160,7 @@ export default function DashboardPage() {
                   <div>
                     <p className="text-sm text-gray-600">Templates</p>
                     <p className="text-xl font-bold text-[#9B5CE0]">
-                      <CountUp end={5} duration={1} />
+                      <CountUp end={template_count} duration={1} />
                     </p>
                   </div>
                 </div>
@@ -159,23 +191,23 @@ export default function DashboardPage() {
             Recent Activity
           </h1>
           <div className="max-h-[90px] overflow-y-auto pr-2">
-            {activityData.map((activity) => (
+            {recent_activity.slice(0, 10).map((activity, index) => (
               <div
-                key={activity.id}
+                key={index}
                 className="flex flex-col sm:flex-row gap-5 items-start sm:items-center mb-4"
               >
                 <PiChecksBold className="text-[#905CC1] mt-1" />
-                <div className=" flex gap-5">
-                  <h2 className="font-medium">{activity.message}</h2>
-                  <p className="text-gray-500 text-sm">- {activity.date}</p>
+                <div className="flex gap-5">
+                  <h2 className="font-medium">{activity.event}</h2>
+                  <p className="text-gray-500 text-sm">- {activity.time}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
-        <div className="w-[290px] h-[170px] mt-5 bg-[#F8F8F8] rounded-2xl">
+        {/* <div className="w-[290px] h-[170px] mt-5 bg-[#F8F8F8] rounded-2xl">
           <p className="text-center font-bold mt-5">Current Discription Plan</p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

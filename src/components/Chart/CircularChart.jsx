@@ -6,14 +6,19 @@ import {
 import "react-circular-progressbar/dist/styles.css";
 import { motion } from "framer-motion";
 
-export default function ReadRateChart() {
+export default function ReadRateChart({ delivery_chart_data = [] }) {
   const [percentage, setPercentage] = useState(0);
 
- 
   useEffect(() => {
-    const timeout = setTimeout(() => setPercentage(70), 300);
+    const [read = 0, delivered = 0] = delivery_chart_data;
+    const total = read + delivered;
+
+    // Calculate % of read out of total
+    const readPercentage = total > 0 ? Math.round((read / total) * 100) : 0;
+
+    const timeout = setTimeout(() => setPercentage(readPercentage), 300);
     return () => clearTimeout(timeout);
-  }, []);
+  }, [delivery_chart_data]);
 
   return (
     <motion.div

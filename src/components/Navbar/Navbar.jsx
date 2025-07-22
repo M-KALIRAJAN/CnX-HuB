@@ -27,7 +27,7 @@ export default function Navbar() {
   const name = localStorage.getItem("name");
 
   const HandleNotification = () => {
-    navigate("/live");
+     navigate("/live");
   };
   return (
     <div className="h-[48px] m-5 relative">
@@ -75,6 +75,7 @@ export default function Navbar() {
                 <p
                   className="px-4 py-2 hover:bg-gray-100 text-sm cursor-pointer text-red-500"
                   onClick={() => {
+                    localStorage.removeItem("isLoggedIn");
                     localStorage.clear();
                     window.location.href = "/";
                   }}

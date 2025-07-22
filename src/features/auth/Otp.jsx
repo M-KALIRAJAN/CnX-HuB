@@ -5,34 +5,31 @@ import Fb from "../../assets/Fb.svg";
 import Google from "../../assets/Google.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { OTP } from "../../api/ApiServices";
+import { debugLog } from "../../utils/debugLog";
 export default function Otp() {
   const location = useLocation();
   const navigate = useNavigate();
   const phone = location.state?.phone;
 
-  console.log("*************************", phone);
   const [otp, setOtp] = useState("");
   const handleOtp = async (e) => {
     e.preventDefault();
     try {
       const payload = { phone, otp };
-      console.log("*********", payload);
 
       const data = await OTP(payload);
-      console.log("OTP Verified:", data);
 
       if (data?.status === "verified") {
         localStorage.setItem("name", data.data.name);
         localStorage.setItem("user_id", data.data.user_id);
-
-        console.log("user_id***********", data.data.user_id);
+        localStorage.setItem("isLoggedIn", "true");
 
         navigate("/dashboard");
       } else {
-        console.log("OTP verification failed:", data.message);
+        debugLog("OTP verification failed:", data.message);
       }
     } catch (err) {
-      console.log(err.message);
+      debugLog(err.message);
     }
   };
   return (

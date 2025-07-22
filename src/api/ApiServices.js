@@ -1,5 +1,6 @@
 import axios from "axios";
 import API from "./BaseUrl";
+import { debugLog } from "../utils/debugLog";
 
 // Login
 export const login = async (phone) => {
@@ -11,11 +12,10 @@ export const login = async (phone) => {
       "https://demo.madurasoft.in/api/login/send-otp/",
       phone
     );
-    console.log(response.data);
 
     return response.data;
   } catch (error) {
-    throw error.response?.data || error.message;
+    debugLog(error.message)
   }
 };
 
@@ -27,11 +27,9 @@ export const OTP = async (payload) => {
       "https://demo.madurasoft.in/api/login/verify-otp/",
       payload
     );
-    console.log("response", response.data);
-
     return response.data;
   } catch (err) {
-    console.log(err.message);
+    debugLog(err.message);
   }
 };
 
@@ -42,10 +40,10 @@ export const TemplateHistroy = async (user_id) => {
     const response = await axios.get(
       `https://demo.madurasoft.in/template-list/?user_id=${user_id}`
     );
-    console.log("TemplateHistroy", response.data);
+
     return response.data;
   } catch (err) {
-    console.log(err.message);
+    debugLog(err.message);
   }
 };
 
@@ -92,8 +90,8 @@ export const CreateTemplates = async ({ formData, user_id }) => {
 
     return response.data;
   } catch (error) {
-    console.error(" API Error:", error?.response?.data || error.message);
-    throw error;
+    debugLog(" API Error:", error?.response?.data || error.message);
+
   }
 };
 
@@ -117,7 +115,7 @@ export const Register = async (fullname, email, phone) => {
     );
     return response.data;
   } catch (e) {
-    console.log("Register error:", e.message);
+    debugLog("Register error:", e.message);
   }
 };
 
@@ -128,11 +126,9 @@ export const CreateAccounts = async (accountdata) => {
       "https://demo.madurasoft.in/api/submit-whatsapp-settings/",
       accountdata
     );
-    console.log(response.data);
-
     return response.data;
   } catch (e) {
-    console.log(e.message);
+    debugLog(e.message);
   }
 };
 
@@ -142,15 +138,13 @@ export const SelectTemplate = async (user_id) => {
     const response = await axios.get(
       `https://demo.madurasoft.in/template-list/?user_id=${user_id}`
     );
-   console.log("response.data",response.data.templates);
-   
     if (response.data.status === "success") {
       return response.data.templates;
     } else {
       return [];
     }
   } catch (err) {
-    console.error("Error fetching templates:", err.message);
+    debugLog("Error fetching templates:", err.message);
     return [];
   }
 };
@@ -158,11 +152,7 @@ export const SelectTemplate = async (user_id) => {
 //Send Single Message
 
 export const SendSingleMsgs = async (user_id, formData) => {
- 
-
   try {
-
-
     const response = await axios.post(
       `https://demo.madurasoft.in/send-message/?user_id=${user_id}`,
       formData,
@@ -170,102 +160,114 @@ export const SendSingleMsgs = async (user_id, formData) => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        withCredentials: true, 
+        withCredentials: true,
       }
     );
-    console.log("response.data",response.data);
-    console.log("formData",formData);
-    
-    
+
+
     return response.data;
   } catch (e) {
-    console.error("API SendSingleMsgs Error:", e.message);
-    throw e;
+    debugLog("API SendSingleMsgs Error:", e.message);
+   
   }
-}; 
-
+};
 
 // User-Categories
 export const UserCategories = async (user_id) => {
   try {
     const response = await axios.get(
       `https://demo.madurasoft.in/api/user-categories/?user_id=${user_id}`,
-       {
-     
-        withCredentials: true, 
+      {
+        withCredentials: true,
       }
     );
     console.log("UserCategories", response.data);
     return response.data;
   } catch (err) {
-    console.log(err.message);
+    debugLog(err.message);
   }
 };
 
 // Conduct-Categories
 
-export const ConductCategorie = async (data) =>{
-  console.log("data*******",data);
-  
-  try{
-        const response = await axios.post(
+export const ConductCategorie = async (data) => {
+  console.log("data*******", data);
+
+  try {
+    const response = await axios.post(
       `https://demo.madurasoft.in/api/contacts-by-category/`,
       data
     );
-    console.log("ConductCategories", response.data.contacts);
+
     return response.data.contacts;
-
-  } catch(e){
-    console.log(e.message);
-    
-  }
-}
-
-//Send Bulk Message
-
-// export const BulkMessageAPI = async (user_id, formData) => {
-//   try {
-//     const response = await axios.post(
-//       `https://demo.madurasoft.in/send-bulk/?user_id=${user_id}`, 
-//       formData,
-//       {
-//         headers: {
-//           "Content-Type": "multipart/form-data",
-//         },
-//         withCredentials: true, // ✅ Send cookies/session
-//       }
-//     );
-//     return response.data;
-//   } catch (error) {
-//     console.error("Bulk message error:", error?.response?.data?.detail || error.message);
-//     throw new Error(error?.response?.data?.detail || "Bulk message failed");
-//   }
-// };
-
-
-
-
-export const BulkMessageAPI = async (user_id, payload) => {
-  console.log("payload",payload);
-  
-  try {
-    const response = axios.post(`https://demo.madurasoft.in/api/send-bulk/?${user_id}`, payload, {
-  headers: {
-    "Content-Type": "application/json",
-  },
-  withCredentials: true, // ✅ important for session cookies
-})
-    return response.data;
-  } catch (error) {
-    const errorMsg = error?.response?.data?.detail || error.message;
-    throw new Error(errorMsg);
+  } catch (e) {
+   debugLog(e.message);
   }
 };
 
+//Send Bulk Message
 
+export const BulkMessageAPI = async (user_id, payload) => {
+  try {
+    const formData = new URLSearchParams();
 
+    formData.append("user_id", user_id);
+    formData.append("recipients", JSON.stringify(payload.recipients));
+    formData.append("template", payload.template);
+    formData.append("lang", payload.lang);
+    const response = await axios.post(
+      `https://demo.madurasoft.in/send-bulk/?user_id=${user_id}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        withCredentials: true,
+      }
+    );
 
+    return response.data;
+  } catch (error) {
+    const errorMsg = error?.response?.data?.detail || error.message;
+ debugLog(errorMsg)
+  }
+};
 
+// Dashboard
+export const Dashboard = async (user_id) => {
+  try {
+    const response = await axios.get(
+      `https://demo.madurasoft.in/api/dashboard/?user_id=${user_id}`
+    );
 
+    return response.data;
+  } catch (err) {
+    debugLog(err.message);
+  }
+};
 
+// Reports
+export const Reports = async (user_id) => {
+  try {
+    const response = await axios.get(
+      `https://demo.madurasoft.in/api/template-usage/?user_id=${user_id}&month`
+    );
+    console.log("response", response.data.template_usage);
+    return response.data.template_usage;
+  } catch (err) {
+    debugLog(err.message);
+  }
+};
 
+// Live Chat
+export const LiveChat = async (user_id) => {
+  try {
+    const response = await axios.get(
+      `https://demo.madurasoft.in/api/replies/?user_id=${user_id}`
+    );
+    console.log("response", response.data);
+    return response.data;
+  } catch (err) {
+    console.log(err.message);
+  }
+};

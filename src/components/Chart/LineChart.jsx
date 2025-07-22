@@ -9,17 +9,14 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-const data = [
-  { day: 'WED', value: 0.1 },
-  { day: 'THU', value: 0.3 },
-  { day: 'FRI', value: 0.5 },
-  { day: 'SAT', value: 0.55 },
-  { day: 'SUN', value: 0.8 },
-  { day: 'MON', value: 0.7 },
-  { day: 'TUE', value: 0.75 },
-];
+export default function MessageChart({ chartLabels, messagesSentChart }) {
+  // Map API data into format for chart
+  const data =
+    chartLabels?.map((day, index) => ({
+      day,
+      value: messagesSentChart?.[index] ? messagesSentChart[index] / 100 : 0,
+    })) || [];
 
-export default function MessageChart() {
   return (
     <div style={{ width: '100%', height: 300 }}>
       <ResponsiveContainer>
@@ -33,9 +30,7 @@ export default function MessageChart() {
           <XAxis dataKey="day" />
           <YAxis domain={[0, 1]} ticks={[0, 0.2, 0.4, 0.6, 0.8, 1]} />
           <CartesianGrid strokeDasharray="3 3" />
-          <Tooltip
-            formatter={(value) => [`${Math.round(value * 110)} Messages`, '']}
-          />
+          <Tooltip formatter={(value) => [`${Math.round(value * 100)}`, 'Messages']} />
           <Area
             type="monotone"
             dataKey="value"

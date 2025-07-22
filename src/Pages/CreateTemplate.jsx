@@ -14,6 +14,7 @@ import { FaPlus } from "react-icons/fa6";
 import { MdCancel } from "react-icons/md";
 import { CreateTemplates } from "../api/ApiServices";
 import axios from "axios";
+import { debugLog } from "../utils/debugLog";
 export default function CreateTemplate() {
   const [header_format, setHeader_Format] = useState("TEXT");
   const [language, setLanguage] = useState("");
@@ -26,7 +27,7 @@ export default function CreateTemplate() {
   const [link, setLink] = useState("");
   const [addButton, setAddButton] = useState(false);
   const [text, setText] = useState("");
-const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [header_media, setHeader_Media] = useState(null);
   const fileInputRef = useRef(null);
 
@@ -153,16 +154,13 @@ const [loading, setLoading] = useState(false);
         components,
         buttons,
       };
-   console.log("formData",formData);
-   
-      const response = await CreateTemplates({ formData, user_id });
 
-      console.log(" Template created:", response);
+      const response = await CreateTemplates({ formData, user_id });
     } catch (err) {
-      console.error( err?.response?.data || err.message);
+      debugLog(err?.response?.data || err.message);
     } finally {
-    setLoading(false); 
-  }
+      setLoading(false);
+    }
   };
 
   return (
@@ -238,7 +236,6 @@ const [loading, setLoading] = useState(false);
               </div>
             </div>
 
-         
             {header_format === "TEXT" ? (
               <div className="mt-2">
                 <Inputs
@@ -303,7 +300,7 @@ const [loading, setLoading] = useState(false);
                 <p className="text-sm font-medium">Add Button</p>
               </div>
               <Button
-                text=  {loading ? "Submitting..." : "Submit"}
+                text={loading ? "Submitting..." : "Submit"}
                 onClick={HandleSubmitTemplate}
                 icon={<FaMessage className="text-white text-sm" />}
               />

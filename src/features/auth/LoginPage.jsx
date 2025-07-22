@@ -6,6 +6,7 @@ import Google from "../../assets/Google.svg";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../api/ApiServices";
 import { motion } from "framer-motion";
+import { debugLog } from "../../utils/debugLog";
 
 export default function LoginPage() {
   const [number, setNumber] = useState("");
@@ -15,10 +16,10 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       const data = await login({ phone: number });
-      console.log("Login Success:", data);
+     
       navigate("/otp", { state: { phone: number } });
     } catch (err) {
-      console.error("Login Failed:", err);
+      debugLog("Login Failed:", err);
     }
   };
 
