@@ -11,7 +11,8 @@ export default function Table({ headers, columns, data }) {
             ))}
           </tr>
         </thead>
-        <tbody className="bg-[#F8F8F8]">
+        {/* <tbody className="bg-[#F8F8F8]">
+          
           {data.map((row, rowIndex) => (
             <tr key={rowIndex} className="border-t border-gray-200">
               {columns.map((key, colIndex) => (
@@ -21,6 +22,28 @@ export default function Table({ headers, columns, data }) {
               ))}
             </tr>
           ))}
+        </tbody> */}
+                <tbody className="bg-[#F8F8F8]">
+          {data.length === 0 ? (
+            <tr>
+              <td
+                colSpan={headers.length}
+                className="px-4 py-8 text-center text-gray-500"
+              >
+                No data available
+              </td>
+            </tr>
+          ) : (
+            data.map((row, rowIndex) => (
+              <tr key={rowIndex} className="border-t border-gray-200">
+                {columns.map((key, colIndex) => (
+                  <td key={colIndex} className="px-4 py-4">
+                    {row[key]}
+                  </td>
+                ))}
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>

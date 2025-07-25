@@ -34,7 +34,7 @@ const data = [
 ];
   const navigate = useNavigate()
 const HandleUpload = () =>{
-       navigate("/contacts/uploadcontact")
+       navigate('/Connections/uploadcontact')
 }
   return (
     <div className="border border-gray-400 h-auto w-full p-4 rounded-2xl"

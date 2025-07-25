@@ -4,8 +4,10 @@ import Bell from "../../assets/Bell.svg";
 import User from "../../assets/User.svg";
 import Down from "../../assets/Down.svg";
 import { FaAngleUp } from "react-icons/fa6";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Navbar() {
+  const { name } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const routeTitles = {
@@ -24,7 +26,7 @@ export default function Navbar() {
 
   const title = routeTitles[location.pathname] || "Welcome";
   const [arrow, setArrow] = useState(false);
-  const name = localStorage.getItem("name");
+ 
 
   const HandleNotification = () => {
      navigate("/live");
@@ -51,7 +53,7 @@ export default function Navbar() {
 
        
             <p
-              className="text-red-700 text-sm max-w-[100px] truncate"
+              className="text-[#905CC1] text-sm max-w-[100px] truncate font-bold"
               title={name}
             >
               {name}
@@ -75,7 +77,7 @@ export default function Navbar() {
                 <p
                   className="px-4 py-2 hover:bg-gray-100 text-sm cursor-pointer text-red-500"
                   onClick={() => {
-                    localStorage.removeItem("isLoggedIn");
+
                     localStorage.clear();
                     window.location.href = "/";
                   }}

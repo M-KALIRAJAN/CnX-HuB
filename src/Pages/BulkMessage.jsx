@@ -95,8 +95,7 @@ export default function BulkMessage() {
     const selectedTemplate = templatelist[selectedIndex];
 
     if (!selectedTemplate) return alert("⚠️ Please select a template.");
-
-    // ✅ 1. Get Recipients
+s
     const recipients =
       recpicentmode === "Use Control List"
         ? contactNumbers
@@ -105,7 +104,7 @@ export default function BulkMessage() {
             .map((n) => n.trim())
             .filter(Boolean);
 
-    // ✅ 3. Build Components (Text/Media)
+
     let components = selectedTemplate.components
       .map((comp, compIndex) => {
         const format = (comp.format || "").toLowerCase();
@@ -127,7 +126,7 @@ export default function BulkMessage() {
       })
       .filter(Boolean);
 
-    // ✅ 4. Handle HEADER Media
+    
     if (
       headerMediaFile &&
       selectedTemplate.components.some((comp) => comp.type === "HEADER")
@@ -160,7 +159,7 @@ export default function BulkMessage() {
     try {
       const response = await BulkMessageAPI(user_id, payload);
     } catch (error) {
-      debugLog("❌ Error:", error.message);
+      debugLog(" Error:", error.message);
     }
   };
 
@@ -176,7 +175,7 @@ export default function BulkMessage() {
               </div>
               <h2 className="text-[#905CC1] font-bold text-base">₹1200</h2>
             </div>
-            <div className="flex items-center justify-between px-4 py-3 w-full sm:w-1/2 bg-gray-100 rounded-2xl">
+            <div className="flex items-center justify-between px-4 py-3 w-full sm:w-1/2 h-[60px] bg-gray-100 rounded-2xl">
               <div className="flex items-center gap-4">
                 <img src={Wallet} alt="Wallet" className="w-6 h-6" />
                 <h2 className="text-base font-medium">Message Left</h2>

@@ -9,6 +9,7 @@ import Report from "../../assets/sidebar/Report.svg";
 import Support from "../../assets/sidebar/Support.svg";
 import chatbot from "../../assets/sidebar/chatbot.svg";
 import Dashboard from "../../assets/sidebar/dashboard.svg";
+import logo from "../../assets/cnx_logo.svg";
 import { FaHistory } from "react-icons/fa";
 import { LuMessageCircleMore } from "react-icons/lu";
 
@@ -20,25 +21,27 @@ export default function Sidebar() {
   const [templateOpen, setTemplateOpen] = useState(false);
   const [sendOpen, setSendOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
- const [templateArrow, setTemplateArrow] = useState(false);
-const [sendArrow, setsendArrow] = useState(false);
-const [supportArrow, setSupportArrow] = useState(false);
+  const [templateArrow, setTemplateArrow] = useState(false);
+  const [sendArrow, setsendArrow] = useState(false);
+  const [supportArrow, setSupportArrow] = useState(false);
 
   return (
     <div className="w-full md:w-[250px] h-screen sidebar rounded-3xl m-3 p-6 flex flex-col justify-between bg-white">
       {/* Scrollable content wrapper */}
 
-      <h2 className="text-2xl font-bold mb-10 text-center text-[#59565C] border-[3px] border-dotted">
+      {/* <h2 className="text-2xl font-bold mb-10 text-center text-[#59565C] border-[3px] border-dotted">
         SarasCnX
-      </h2>
+      </h2> */}
+      <div className="text-center flex justify-center mb-7 ">
+        <img src={logo} height="100px" width="120px" />
+      </div>
       <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
         <div className="flex flex-col gap-3">
           {/* Dashboard */}
           <NavLink
-            to="/dashboard"
+            to="/Performance-Hub"
             className={({ isActive }) =>
-              `flex items-center gap-4 p-2 rounded-3xl transition cursor-pointer ${
-                isActive ? "bg-[#905CC1] text-white" : "text-[#59565C]"
+              `flex items-center gap-4 p-2 rounded-3xl transition cursor-pointer ${isActive ? "bg-[#905CC1] text-white" : "text-[#59565C]"
               }`
             }
           >
@@ -48,30 +51,32 @@ const [supportArrow, setSupportArrow] = useState(false);
             <p>Dashboard</p>
           </NavLink>
 
-          {/* Template */}
+          {/* Template Parent Link */}
           <div className="flex items-center justify-between">
             <NavLink
-              to="/template"
+              to="/Layout-Hub"
               className={({ isActive }) =>
-                `flex items-center gap-4 p-2 rounded-3xl transition cursor-pointer w-full ${
-                  isActive ? "bg-[#905CC1] text-white" : "text-[#59565C]"
+                `flex items-center justify-between p-3 rounded-2xl w-full transition-all ${isActive ? "bg-[#905CC1] text-white" : "text-[#59565C] hover:bg-[#F4F0FA]"
                 }`
               }
             >
-              <div className="w-10 h-10 bg-white flex items-center justify-center rounded-full shadow-sm">
-                <img src={Template} alt="Template" className="w-5 h-5" />
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-white flex items-center justify-center rounded-full shadow-sm">
+                  <img src={Template} alt="Template" className="w-5 h-5" />
+                </div>
+                <p className="text-sm font-medium">Template</p>
               </div>
-              <p>Template</p>
+
               <div
-                className="ml-7"
                 onClick={(e) => {
                   e.preventDefault();
                   setTemplateOpen(!templateOpen);
                   setTemplateArrow(!templateArrow);
                 }}
+                className="cursor-pointer"
               >
                 {templateArrow ? (
-                  <img src={Down} className="cursor-pointer w-5 h-5" />
+                  <img src={Down} className="w-5 h-5" />
                 ) : (
                   <FaAngleUp className="text-gray-400" />
                 )}
@@ -79,56 +84,57 @@ const [supportArrow, setSupportArrow] = useState(false);
             </NavLink>
           </div>
 
+          {/* Submenu */}
           <div
-            className={`ml-10 overflow-hidden transition-all duration-300 ease-in-out ${
-              templateOpen ? "max-h-40 " : "max-h-0"
-            }`}
+            className={`ml-4 overflow-hidden transition-all duration-300 ease-in-out ${templateOpen ? "max-h-40" : "max-h-0"
+              }`}
           >
-            <ul className="space-y-2 text-sm">
+            <ul className="mt-2 pl-4 space-y-2 border-l border-[#905CC1]/30">
               <li>
                 <NavLink
-                  to="/template/history"
+                  to="/Layout-Hub/Library"
                   className={({ isActive }) =>
-                    `flex items-center gap-3 p-2 rounded-xl transition-all duration-200 ${
-                      isActive
-                        ? "bg-[#905CC1] text-white"
-                        : "text-[#59565C] hover:bg-[#F4F0FA]"
+                    `flex items-center gap-3 p-2 rounded-xl transition-all duration-200 ${isActive
+                      ? "bg-[#905CC1] text-white"
+                      : "text-[#59565C] hover:bg-[#F4F0FA]"
                     }`
                   }
                 >
-                  <div className=" w-[60] h-[60] bg-white rounded-full p-2">
-                    <FaHistory   className="text-[#905CC1]" />
+                  <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm">
+                    <FaHistory className="text-[#905CC1] text-sm" />
                   </div>
-                  Template History
+                  <span className="text-sm whitespace-nowrap">Template History</span>
                 </NavLink>
               </li>
             </ul>
           </div>
 
           {/* Send */}
+          {/* Send Menu */}
           <div className="flex items-center justify-between">
             <NavLink
-              to="/send"
+              to="/Send-Message"
               className={({ isActive }) =>
-                `flex items-center gap-4 p-2 rounded-3xl transition cursor-pointer w-full ${
-                  isActive ? "bg-[#905CC1] text-white" : "text-[#59565C]"
-                }`
+                `flex items-center justify-between p-3 rounded-2xl w-full transition-all ${isActive ? "bg-[#905CC1] text-white" : "text-[#59565C] hover:bg-[#F4F0FA]"}`
               }
             >
-              <div className="w-10 h-10 bg-white flex items-center justify-center rounded-full shadow-sm">
-                <img src={Send} alt="Send" className="w-5 h-5" />
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-white flex items-center justify-center rounded-full shadow-sm">
+                  <img src={Send} alt="Send" className="w-5 h-5" />
+                </div>
+                <p className="text-sm font-medium">Send</p>
               </div>
-              <p>Send </p>
+
               <div
-                className="ml-7"
                 onClick={(e) => {
                   e.preventDefault();
                   setSendOpen(!sendOpen);
                   setsendArrow(!sendArrow);
                 }}
+                className="cursor-pointer"
               >
                 {sendArrow ? (
-                  <img src={Down} className="cursor-pointer w-5 h-5" />
+                  <img src={Down} className="w-5 h-5" />
                 ) : (
                   <FaAngleUp className="text-gray-400" />
                 )}
@@ -136,38 +142,36 @@ const [supportArrow, setSupportArrow] = useState(false);
             </NavLink>
           </div>
 
+          {/* Send Submenu */}
           <div
-            className={`ml-10 overflow-hidden transition-all duration-300 ease-in-out ${
-              sendOpen ? "max-h-40 " : "max-h-0"
-            }`}
+            className={`ml-4 overflow-hidden transition-all duration-300 ease-in-out ${sendOpen ? "max-h-40" : "max-h-0"
+              }`}
           >
-            <ul className="space-y-2 text-sm">
+            <ul className="mt-2 pl-4 space-y-2 border-l border-[#905CC1]/30">
               <li>
                 <NavLink
-                  to="/send/singlemessage"
+                  to="/Send-Message/Individual"
                   className={({ isActive }) =>
-                    `flex items-center gap-3 p-2 rounded-xl transition-all duration-200 ${
-                      isActive
-                        ? "bg-[#905CC1] text-white"
-                        : "text-[#59565C] hover:bg-[#F4F0FA]"
-                    }`
+                    `flex items-center gap-3 p-2 rounded-xl transition-all duration-200 ${isActive
+                      ? "bg-[#905CC1] text-white"
+                      : "text-[#59565C] hover:bg-[#F4F0FA]"}`
                   }
                 >
-                  <div className=" w-[60] h-[60] bg-white rounded-full p-1">
-                    <LuMessageCircleMore   className="text-[#905CC1]" size={22} />
+                  <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm">
+                    <LuMessageCircleMore className="text-[#905CC1]" size={20} />
                   </div>
-                  Single Send Message
+                  <span className="text-sm ">Single Send Message</span>
                 </NavLink>
               </li>
             </ul>
           </div>
 
+
           {/* Live Chat */}
           <NavLink
-            to="/live"
+            to="/Realtime-chat"
             className={({ isActive }) =>
-              `flex items-center gap-4 p-2 rounded-3xl transition cursor-pointer ${
-                isActive ? "bg-[#905CC1] text-white" : "text-[#59565C]"
+              `flex items-center gap-4 p-2 rounded-3xl transition cursor-pointer ${isActive ? "bg-[#905CC1] text-white" : "text-[#59565C]"
               }`
             }
           >
@@ -179,10 +183,9 @@ const [supportArrow, setSupportArrow] = useState(false);
 
           {/* Contacts */}
           <NavLink
-            to="/contacts"
+            to="/Connections"
             className={({ isActive }) =>
-              `flex items-center gap-4 p-2 rounded-3xl transition cursor-pointer ${
-                isActive ? "bg-[#905CC1] text-white" : "text-[#59565C]"
+              `flex items-center gap-4 p-2 rounded-3xl transition cursor-pointer ${isActive ? "bg-[#905CC1] text-white" : "text-[#59565C]"
               }`
             }
           >
@@ -194,10 +197,9 @@ const [supportArrow, setSupportArrow] = useState(false);
 
           {/* Report */}
           <NavLink
-            to="/report"
+            to="/Analytics"
             className={({ isActive }) =>
-              `flex items-center gap-4 p-2 rounded-3xl transition cursor-pointer ${
-                isActive ? "bg-[#905CC1] text-white" : "text-[#59565C]"
+              `flex items-center gap-4 p-2 rounded-3xl transition cursor-pointer ${isActive ? "bg-[#905CC1] text-white" : "text-[#59565C]"
               }`
             }
           >
@@ -212,25 +214,27 @@ const [supportArrow, setSupportArrow] = useState(false);
             <NavLink
               to="/support"
               className={({ isActive }) =>
-                `flex items-center gap-4 p-2 rounded-3xl transition cursor-pointer w-full ${
-                  isActive ? "bg-[#905CC1] text-white" : "text-[#59565C]"
+                `flex items-center justify-between p-3 rounded-2xl w-full transition-all ${isActive ? "bg-[#905CC1] text-white" : "text-[#59565C] hover:bg-[#F4F0FA]"
                 }`
               }
             >
-              <div className="w-10 h-10 bg-white flex items-center justify-center rounded-full shadow-sm">
-                <img src={Support} alt="Support" className="w-5 h-5" />
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-white flex items-center justify-center rounded-full shadow-sm">
+                  <img src={Support} alt="Support" className="w-5 h-5" />
+                </div>
+                <p className="text-sm font-medium">Support</p>
               </div>
-              <p>Support</p>
+
               <div
-                className="ml-7"
                 onClick={(e) => {
                   e.preventDefault();
                   setSupportOpen(!supportOpen);
                   setSupportArrow(!supportArrow);
                 }}
+                className="cursor-pointer"
               >
                 {supportArrow ? (
-                  <img src={Down} className="cursor-pointer w-5 h-5" />
+                  <img src={Down} className="w-5 h-5" />
                 ) : (
                   <FaAngleUp className="text-gray-400" />
                 )}
@@ -238,34 +242,31 @@ const [supportArrow, setSupportArrow] = useState(false);
             </NavLink>
           </div>
 
+          {/* Submenu */}
           <div
-            className={`ml-10 overflow-hidden transition-all duration-300 ease-in-out ${
-              supportOpen ? "max-h-40 " : "max-h-0"
-            }`}
+            className={`ml-4 overflow-hidden transition-all duration-300 ease-in-out ${supportOpen ? "max-h-40" : "max-h-0"
+              }`}
           >
-            <ul className="space-y-2 text-sm">
+            <ul className="mt-2 pl-4 space-y-2 border-l border-[#905CC1]/30">
               <li>
                 <NavLink
                   to="/support/ticket"
                   className={({ isActive }) =>
-                    `flex items-center gap-3 p-2 rounded-xl transition-all duration-200 ${
-                      isActive
-                        ? "bg-[#905CC1] text-white"
-                        : "text-[#59565C] hover:bg-[#F4F0FA]"
+                    `flex items-center gap-3 p-2 rounded-xl transition-all duration-200 ${isActive
+                      ? "bg-[#905CC1] text-white"
+                      : "text-[#59565C] hover:bg-[#F4F0FA]"
                     }`
                   }
                 >
-                  <div className=" w-[60] h-[60] bg-white rounded-full p-1">
-                    <MdOutlineContactSupport
-                      className="text-[#905CC1]"
-                      size={19}
-                    />
+                  <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm">
+                    <MdOutlineContactSupport className="text-[#905CC1] text-sm" />
                   </div>
-                  Support / Ticket
+                  <span className="text-sm whitespace-nowrap">Support / Ticket</span>
                 </NavLink>
               </li>
             </ul>
           </div>
+
         </div>
       </div>
 

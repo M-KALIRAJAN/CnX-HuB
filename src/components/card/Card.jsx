@@ -1,4 +1,5 @@
 import React from 'react';
+import CountUp from 'react-countup';
 
 export default function Card({ text, count, bgColor, textColor, image, ...rest }) {
   return (
@@ -8,7 +9,7 @@ export default function Card({ text, count, bgColor, textColor, image, ...rest }
     >
       <div>
         <p>{text}</p>
-        <h2 className={`font-bold text-[30px] ${textColor}`}>{count}</h2>
+        <h2 className={`font-bold text-[30px] ${textColor}`}> <CountUp end={count} duration={1} /></h2>
       </div>
       
       {image && (

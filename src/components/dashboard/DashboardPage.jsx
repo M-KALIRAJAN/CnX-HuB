@@ -5,6 +5,7 @@ import Totalsent from "../../assets/Totalsent.svg";
 import Delivered from "../../assets/Delivered.svg";
 import Read from "../../assets/Read.svg";
 import Failed from "../../assets/Failed.svg";
+import Pattern from "../../assets/Pattern.svg";
 import LineChart from "../Chart/LineChart";
 import ReadRateChart from "../Chart/CircularChart";
 import { CircularProgressbar } from "react-circular-progressbar";
@@ -16,13 +17,16 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import CountUp from "react-countup";
 import { Dashboard } from "../../api/ApiServices";
+import { useAuth } from "../../context/AuthContext";
 
 export default function DashboardPage() {
+   const { userId } = useAuth();
   const [dashboardData, setDashboardData] = useState({
     status_summary: {},
     wallet_balance: 0,
     template_count: 0,
     total_contacts: 0,
+    per_message_cost:0,
     recent_activity: [],
     chart_labels: [],
     messages_sent_chart: [],
@@ -36,19 +40,25 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
+     console.log("userId" ,userId);
     const Dashboard_data = async () => {
-      const user_id = localStorage.getItem("user_id");
-      const res = await Dashboard(user_id);
+      if (!userId) return;
+     
+      
+      const res = await Dashboard(userId);
+      console.log("res",res);
+      
       setDashboardData(res);
     };
     Dashboard_data();
-  }, []);
+  }, [userId]);
 
   const {
     status_summary = {},
     wallet_balance = 0,
     template_count = 0,
     total_contacts = 0,
+    per_message_cost = 0,
     recent_activity = [],
     chart_labels = [],
     messages_sent_chart = [],
@@ -56,7 +66,7 @@ export default function DashboardPage() {
   } = dashboardData;
 
   return (
-    <div className="max-h-full max-w-full p-3">
+   <div className="w-full h-auto flex flex-col gap-10 overflow-x-hidden">
       {/* Top Cards Section */}
       <div className="flex flex-col  lg:flex-row gap-3 lg:gap-5 justify-around items-center rounded-3xl bg-[#F8F8F8] p-3 h-auto lg:h-[157px]">
         {/* Left */}
@@ -105,7 +115,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Charts + Wallet Info Section */}
-      <div className="border border-gray-400 w-full p-4 rounded-2xl mt-10 lg:h-[360px]">
+      <div className="border border-gray-400 w-full p-4 rounded-2xl mt-10 lg:h-[390px]">
         <div className="flex flex-col lg:flex-row gap-10 items-center lg:items-start h-auto ">
           {/* Line Chart */}
           <div className="w-full lg:w-[400px]">
@@ -130,9 +140,9 @@ export default function DashboardPage() {
 
           {/* Wallet Info */}
           <div className="w-full sm:w-[300px]">
-            <div className="bg-white rounded-2xl shadow-sm p-6 space-y-6">
+            <div className="bg-white rounded-2xl shadow-sm p-4 space-y-3">
               {/* Wallet Balance */}
-              <div className="flex items-center justify-between border-b pb-4">
+              <div className="flex items-center justify-between border-b pb-2">
                 <div className="flex items-center gap-4">
                   <div className="bg-[#f4edff] p-3 rounded-xl">
                     <FaWallet className="text-[#9B5CE0] text-xl" />
@@ -152,7 +162,33 @@ export default function DashboardPage() {
               </div>
 
               {/* Templates */}
-              <div className="flex items-center justify-between border-b pb-4">
+              <div className="flex items-center justify-between border-b pb-2">
+                <div className="flex items-center gap-4">
+                  <div className="bg-[#f4edff] p-3 rounded-xl">
+                    <FiLayout className="text-[#9B5CE0] text-xl" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Templates</p>
+                    <p className="text-xl font-bold text-[#9B5CE0]">
+                      <CountUp end={template_count} duration={1} />
+                    </p>
+                  </div>
+                </div>
+              </div> 
+               <div className="flex items-center justify-between border-b pb-2">
+                <div className="flex items-center gap-4">
+                  <div className="bg-[#f4edff] p-3 rounded-xl">
+                    <FiLayout className="text-[#9B5CE0] text-xl" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">per_message_cost</p>
+                    <p className="text-xl font-bold text-[#9B5CE0]">
+                      <CountUp end={per_message_cost} duration={1} />
+                    </p>
+                  </div>
+                </div>
+              </div>
+                  <div className="flex items-center justify-between border-b pb-2">
                 <div className="flex items-center gap-4">
                   <div className="bg-[#f4edff] p-3 rounded-xl">
                     <FiLayout className="text-[#9B5CE0] text-xl" />
@@ -208,6 +244,9 @@ export default function DashboardPage() {
         {/* <div className="w-[290px] h-[170px] mt-5 bg-[#F8F8F8] rounded-2xl">
           <p className="text-center font-bold mt-5">Current Discription Plan</p>
         </div> */}
+        <div>
+          <img src={Pattern}/>
+        </div>
       </div>
     </div>
   );

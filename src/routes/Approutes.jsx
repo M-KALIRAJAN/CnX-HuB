@@ -1,5 +1,12 @@
-import React, { lazy, Suspense } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import React, { lazy, Suspense, useEffect, useState } from "react";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 // Lazy load all pages/components
 const Maduralayout = lazy(() => import("../layout/Maduralayout"));
@@ -20,117 +27,125 @@ const SupportTicket = lazy(() => import("../Pages/SupportTicket"));
 const NotFound = lazy(() => import("../Pages/NotFound"));
 
 export default function Approutes() {
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-       console.log("isLoggedIn",isLoggedIn);
-       
-
+  const { userId } = useAuth()
   return (
-    <BrowserRouter>
-      <Suspense fallback={<div className="text-center mt-10"></div>}>
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/otp" element={<Otp />} />
-          <Route path="/Register" element={<CreateAccount />} />
+    <Suspense fallback={<div className="text-center mt-10"></div>}>
+      <Routes>
 
-          {/* Protected routes – rendered only if logged in */}
-          {isLoggedIn && (
-            <>
-              <Route
-                path="/dashboard"
-                element={
-                  <Maduralayout>
-                    <DashboardPage />
-                  </Maduralayout>
-                }
-              />
-              <Route
-                path="/template"
-                element={
-                  <Maduralayout>
-                    <CreateTemplate />
-                  </Maduralayout>
-                }
-              />
-              <Route
-                path="/template/history"
-                element={
-                  <Maduralayout>
-                    <TemplateLibrary />
-                  </Maduralayout>
-                }
-              />
-              <Route
-                path="/send"
-                element={
-                  <Maduralayout>
-                    <BulkMessage />
-                  </Maduralayout>
-                }
-              />
-              <Route
-                path="/send/singlemessage"
-                element={
-                  <Maduralayout>
-                    <SendSingleMessage />
-                  </Maduralayout>
-                }
-              />
-              <Route
-                path="/live"
-                element={
-                  <Maduralayout>
-                    <Livechat />
-                  </Maduralayout>
-                }
-              />
-              <Route
-                path="/contacts"
-                element={
-                  <Maduralayout>
-                    <Contacts />
-                  </Maduralayout>
-                }
-              />
-              <Route
-                path="/contacts/uploadcontact"
-                element={
-                  <Maduralayout>
-                    <UploadContact />
-                  </Maduralayout>
-                }
-              />
-              <Route
-                path="/report"
-                element={
-                  <Maduralayout>
-                    <Report />
-                  </Maduralayout>
-                }
-              />
-              <Route
-                path="/support"
-                element={
-                  <Maduralayout>
-                    <Support />
-                  </Maduralayout>
-                }
-              />
-              <Route
-                path="/support/ticket"
-                element={
-                  <Maduralayout>
-                    <SupportTicket />
-                  </Maduralayout>
-                }
-              />
-            </>
-          )}
+        <Route
+          path="/"
+          element={!userId ? <LoginPage /> : <Navigate to="/Performance-Hub" />}
+        />
+        <Route
+          path="/otp"
+          element={!userId ? <Otp /> : <Navigate to="/Performance-Hub" />}
+        />
+        <Route
+          path="/Register"
+          element={!userId ? <CreateAccount /> : <Navigate to="/Performance-Hub" />}
+        />
 
-          {/* Catch-all route */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+        {/* Protected routes */}
+        {userId && (
+          <>
+            <Route
+              path="/Performance-Hub"
+              element={
+                <Maduralayout>
+                  <DashboardPage />
+                </Maduralayout>
+              }
+            />
+            <Route
+              path="/Layout-Hub"
+              element={
+                <Maduralayout>
+                  <CreateTemplate />
+                </Maduralayout>
+              }
+            />
+            <Route
+              path="/Layout-Hub/Library"
+              element={
+                <Maduralayout>
+                  <TemplateLibrary />
+                </Maduralayout>
+              }
+            />
+            <Route
+              path="/Send-Message"
+              element={
+                <Maduralayout>
+                  <BulkMessage />
+                </Maduralayout>
+              }
+            />
+            <Route
+              path="/Send-Message/Individual"
+              element={
+                <Maduralayout>
+                  <SendSingleMessage />
+                </Maduralayout>
+              }
+            />
+            <Route
+              path="/Realtime-chat"
+              element={
+                <Maduralayout>
+                  <Livechat />
+                </Maduralayout>
+              }
+            />
+            <Route
+              path="/Connections"
+              element={
+                <Maduralayout>
+                  <Contacts />
+                </Maduralayout>
+              }
+            />
+            <Route
+              path="/Connections/uploadcontact"
+              element={
+                <Maduralayout>
+                  <UploadContact />
+                </Maduralayout>
+              }
+            />
+            <Route
+              path="/Analytics"
+              element={
+                <Maduralayout>
+                  <Report />
+                </Maduralayout>
+              }
+            />
+            <Route
+              path="/support"
+              element={
+                <Maduralayout>
+                  <Support />
+                </Maduralayout>
+              }
+            />
+            <Route
+              path="/support/ticket"
+              element={
+                <Maduralayout>
+                  <SupportTicket />
+                </Maduralayout>
+              }
+            />
+
+
+          </>
+        )}
+
+        {/* Fallback route */}
+        <Route path="*" element={<NotFound />} />
+
+      </Routes>
+    </Suspense>
   );
 }
+

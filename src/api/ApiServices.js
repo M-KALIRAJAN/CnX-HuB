@@ -12,7 +12,8 @@ export const login = async (phone) => {
       "https://demo.madurasoft.in/api/login/send-otp/",
       phone
     );
-
+   console.log("response",response.data);
+   
     return response.data;
   } catch (error) {
     debugLog(error.message)
@@ -25,11 +26,14 @@ export const OTP = async (payload) => {
   try {
     const response = await axios.post(
       "https://demo.madurasoft.in/api/login/verify-otp/",
-      payload
+      payload,
+  
     );
+
+   
     return response.data;
   } catch (err) {
-    debugLog(err.message);
+    debugLog("8888888",err.message);
   }
 };
 
@@ -48,7 +52,6 @@ export const TemplateHistroy = async (user_id) => {
 };
 
 // Create Template
-
 export const CreateTemplates = async ({ formData, user_id }) => {
   try {
     const form = new FormData();
