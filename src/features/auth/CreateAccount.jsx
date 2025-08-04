@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { CreateAccounts, login, OTP, Register } from "../../api/ApiServices";
 import { debugLog } from "../../utils/debugLog";
 import logo from "../../assets/cnx_logo.svg";
+import { useAuth } from "../../context/AuthContext";
 
 export default function CreateAccount() {
   const [fullname, setName] = useState("");
@@ -19,6 +20,7 @@ export default function CreateAccount() {
   const [errors, setErrors] = useState({});
   const [successotp, setSuccessOtp] = useState(false);
   const navigate = useNavigate();
+   const {login} = useAuth()
 
   const validateFields = () => {
     const newErrors = {};
@@ -63,8 +65,11 @@ export default function CreateAccount() {
       const res = await OTP(payload);
       if (res?.status === "verified") {
         console.log("payload",res);
-                localStorage.setItem("name", res.data.name);
-        localStorage.setItem("user_id", res.data.user_id);
+      sessionStorage.setItem("name", res.data.name);      
+      sessionStorage.setItem("user_id", res.data.user_id); 
+      
+      login(res.data.user_id, res.data.name ,)
+ 
         setVerifyOtp(true);
       } else {
         debugLog("OTP verification failed:", res.message);
@@ -107,7 +112,21 @@ export default function CreateAccount() {
       const res = await CreateAccounts(accountdata);
       console.log("response", res);
       if (res.status === 'success') {
-        navigate("/Performance-Hub");
+          //  login(res.data.user_id, res.data.name);
+             const role = "superadmin";
+        sessionStorage.setItem("role", role);
+
+        if (role === "superadmin") {
+          console.log(role);
+          
+          navigate("/admin-dashboard");
+        } else {
+          console.log("enter else");
+          
+          navigate("/Performance-Hub");
+          
+        }
+        // navigate("/Performance-Hub");
       }
 
     } catch (e) {

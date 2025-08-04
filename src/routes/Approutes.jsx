@@ -7,6 +7,11 @@ import {
   useLocation,
 } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import SuperAdminPage from "../components/Super_Admin_Page/SuperAdminPage";
+import UserManagement from "../components/Super_Admin_Page/UserManagement";
+import AccountDetails from "../components/Super_Admin_Page/AccountDetails";
+import UserActivityLog from "../components/Super_Admin_Page/UserActivityLog";
+import UserAccessControl from "../components/Super_Admin_Page/UserAccessControl";
 
 // Lazy load all pages/components
 const Maduralayout = lazy(() => import("../layout/Maduralayout"));
@@ -25,9 +30,12 @@ const Report = lazy(() => import("../Pages/Report"));
 const Support = lazy(() => import("../Pages/Support"));
 const SupportTicket = lazy(() => import("../Pages/SupportTicket"));
 const NotFound = lazy(() => import("../Pages/NotFound"));
+const Chatbot = lazy(() => import("../Pages/Chatbot"));
+
+//SUPER-ADMIN
 
 export default function Approutes() {
-  const { userId } = useAuth()
+  const { userId   } = useAuth()
   return (
     <Suspense fallback={<div className="text-center mt-10"></div>}>
       <Routes>
@@ -46,7 +54,37 @@ export default function Approutes() {
         />
 
         {/* Protected routes */}
-        {userId && (
+
+       {/* {role === "superadmin" && (
+      <><Route
+            path="/admin-dashboard"
+            element={<Maduralayout>
+              <SuperAdminPage />
+            </Maduralayout>} />
+            <Route
+              path="/admin-userlist"
+              element={<Maduralayout>
+                <UserManagement />
+              </Maduralayout>} />
+
+                <Route
+              path="/account-details"
+              element={<Maduralayout>
+                <AccountDetails />
+              </Maduralayout>} />
+              <Route
+              path="/useraccess-control"
+              element={<Maduralayout>
+                <UserAccessControl />
+              </Maduralayout>} />
+                 <Route
+              path="/useractivity-log"
+              element={<Maduralayout>
+                <UserActivityLog />
+              </Maduralayout>} />
+              </>
+    )} */}
+         {userId && (
           <>
             <Route
               path="/Performance-Hub"
@@ -133,6 +171,14 @@ export default function Approutes() {
               element={
                 <Maduralayout>
                   <SupportTicket />
+                </Maduralayout>
+              }
+            />
+                <Route
+              path="/Chatbot"
+              element={
+                <Maduralayout>
+                  < Chatbot />
                 </Maduralayout>
               }
             />

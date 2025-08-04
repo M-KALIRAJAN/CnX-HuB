@@ -274,3 +274,25 @@ export const LiveChat = async (user_id) => {
     console.log(err.message);
   }
 };
+
+
+
+export const conductFile = async (formData) => {
+  try {
+    const response = await axios.post(
+      "https://demo.madurasoft.in/api/contact-file/",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (err) {
+    console.error("Upload error:", err.message);
+    throw err;
+  }
+};
+

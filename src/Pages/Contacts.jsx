@@ -41,7 +41,7 @@ const HandleUpload = () =>{
        data-aos="zoom-in"
     data-aos-duration="1000"
     >
-      <h2 className="font-bold " style={{ fontFamily: 'Satoshi, sans-serif' }}>Upload Conduct CSV</h2>
+      <h2 className="font-bold " style={{ fontFamily: 'Satoshi, sans-serif' }}>Upload Contact's CSV</h2>
 <div className="mt-5 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
   {/* Left Side */}
   <div className="flex flex-col sm:flex-row flex-wrap gap-3 items-start sm:items-center">

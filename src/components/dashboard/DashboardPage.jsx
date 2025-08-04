@@ -18,6 +18,7 @@ import "aos/dist/aos.css";
 import CountUp from "react-countup";
 import { Dashboard } from "../../api/ApiServices";
 import { useAuth } from "../../context/AuthContext";
+import InfoCard from "../Chart/InfoCard ";
 
 export default function DashboardPage() {
    const { userId } = useAuth();
@@ -115,111 +116,60 @@ export default function DashboardPage() {
       </div>
 
       {/* Charts + Wallet Info Section */}
-      <div className="border border-gray-400 w-full p-4 rounded-2xl mt-10 lg:h-[390px]">
-        <div className="flex flex-col lg:flex-row gap-10 items-center lg:items-start h-auto ">
-          {/* Line Chart */}
-          <div className="w-full lg:w-[400px]">
-            <h2 className="font-bold text-[#59565C]">
-              Message Send (Last 7 days)
-            </h2>
-            <LineChart
-              chartLabels={dashboardData.chart_labels}
-              messagesSentChart={dashboardData.messages_sent_chart}
-            />
-          </div>
+    <div className="w-full border border-gray-400 p-4 rounded-2xl mt-10">
+  <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 items-center lg:items-start">
 
-          {/* Read Chart */}
-          <div className="w-full sm:w-[200px] mt-10 lg:mt-0">
-            <h2 className="font-bold text-center mb-5 text-[#59565C]">
-              Read Chart
-            </h2>
-            <ReadRateChart
-             delivery_chart_data={dashboardData.delivery_chart_data}
-             />
-          </div>
+    {/* Line Chart */}
+    <div className="w-full lg:w-1/3">
+      <h2 className="font-bold text-[#59565C] mb-4">Message Sent (Last 7 days)</h2>
+      <LineChart
+        chartLabels={dashboardData.chart_labels}
+        messagesSentChart={dashboardData.messages_sent_chart}
+      />
+    </div>
 
-          {/* Wallet Info */}
-          <div className="w-full sm:w-[300px]">
-            <div className="bg-white rounded-2xl shadow-sm p-4 space-y-3">
-              {/* Wallet Balance */}
-              <div className="flex items-center justify-between border-b pb-2">
-                <div className="flex items-center gap-4">
-                  <div className="bg-[#f4edff] p-3 rounded-xl">
-                    <FaWallet className="text-[#9B5CE0] text-xl" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Wallet Balance</p>
-                    <p className="text-2xl font-bold text-[#9B5CE0]">
-                      ₹
-                      <CountUp
-                        end={wallet_balance}
-                        duration={1.5}
-                        separator=","
-                      />
-                    </p>
-                  </div>
-                </div>
-              </div>
+    {/* Read Chart */}
+    <div className="w-full sm:w-[250px] lg:w-1/4 mt-6 lg:mt-0">
+      <h2 className="font-bold text-center mb-5 text-[#59565C]">Read Chart</h2>
+      <ReadRateChart delivery_chart_data={dashboardData.delivery_chart_data} />
+    </div>
 
-              {/* Templates */}
-              <div className="flex items-center justify-between border-b pb-2">
-                <div className="flex items-center gap-4">
-                  <div className="bg-[#f4edff] p-3 rounded-xl">
-                    <FiLayout className="text-[#9B5CE0] text-xl" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Templates</p>
-                    <p className="text-xl font-bold text-[#9B5CE0]">
-                      <CountUp end={template_count} duration={1} />
-                    </p>
-                  </div>
-                </div>
-              </div> 
-               <div className="flex items-center justify-between border-b pb-2">
-                <div className="flex items-center gap-4">
-                  <div className="bg-[#f4edff] p-3 rounded-xl">
-                    <FiLayout className="text-[#9B5CE0] text-xl" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">per_message_cost</p>
-                    <p className="text-xl font-bold text-[#9B5CE0]">
-                      <CountUp end={per_message_cost} duration={1} />
-                    </p>
-                  </div>
-                </div>
-              </div>
-                  <div className="flex items-center justify-between border-b pb-2">
-                <div className="flex items-center gap-4">
-                  <div className="bg-[#f4edff] p-3 rounded-xl">
-                    <FiLayout className="text-[#9B5CE0] text-xl" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Templates</p>
-                    <p className="text-xl font-bold text-[#9B5CE0]">
-                      <CountUp end={template_count} duration={1} />
-                    </p>
-                  </div>
-                </div>
-              </div>
+    {/* Wallet Info */}
+    <div className="w-full lg:w-1/3">
+      <div className="bg-white rounded-2xl shadow-md p-4 space-y-4">
 
-              {/* Contact Categories */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="bg-[#f4edff] p-3 rounded-xl">
-                    <BsJournalBookmarkFill className="text-[#9B5CE0] text-xl" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Contact Categories</p>
-                    <p className="text-xl font-bold text-[#9B5CE0]">
-                      <CountUp end={4} duration={1} />
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Wallet Balance */}
+        <InfoCard
+          icon={<FaWallet className="text-[#9B5CE0] text-xl" />}
+          label="Wallet Balance"
+          value={`₹${wallet_balance}`}
+        />
+
+        {/* Templates */}
+        <InfoCard
+          icon={<FiLayout className="text-[#9B5CE0] text-xl" />}
+          label="Templates"
+          value={<CountUp end={template_count} duration={1} />}
+        />
+
+        {/* Per Message Cost */}
+        <InfoCard
+          icon={<FiLayout className="text-[#9B5CE0] text-xl" />}
+          label="Per Message Cost"
+          value={<CountUp end={per_message_cost} duration={1} />}
+        />
+
+        {/* Contact Categories */}
+        <InfoCard
+          icon={<BsJournalBookmarkFill className="text-[#9B5CE0] text-xl" />}
+          label="Contact Categories"
+          value={<CountUp end={4} duration={1} />}
+        />
       </div>
+    </div>
+  </div>
+</div>
+
       <div className=" flex items-center gap-7">
         {/* Recent Activity */}
         <div className="border border-gray-400 h-full w-full sm:w-[450px] p-3 rounded-2xl mt-10">

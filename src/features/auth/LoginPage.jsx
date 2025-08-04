@@ -88,6 +88,9 @@ export default function LoginPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
+            
+
+
             <Inputs
               label="Mobile Number"
               name="phone"

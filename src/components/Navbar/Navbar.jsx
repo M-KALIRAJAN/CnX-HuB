@@ -8,6 +8,7 @@ import { useAuth } from "../../context/AuthContext";
 
 export default function Navbar() {
   const { name } = useAuth();
+  const {logout} = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const routeTitles = {
@@ -78,7 +79,7 @@ export default function Navbar() {
                   className="px-4 py-2 hover:bg-gray-100 text-sm cursor-pointer text-red-500"
                   onClick={() => {
 
-                    localStorage.clear();
+                    logout();
                     window.location.href = "/";
                   }}
                 >
