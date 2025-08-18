@@ -2,8 +2,40 @@ import { LuBookOpenText } from "react-icons/lu";
 import { HiOutlineHome } from "react-icons/hi";
 import person from "../assets/person.png"; // Replace with actual path
 import Inputs from "../utils/Inputs";
-
+import { useAuth } from "../context/AuthContext";
+import { useSpring } from "framer-motion";
+import { useState } from "react";
+import { chatBot } from "../api/ApiServices";
+import { ToastContainer, toast } from 'react-toastify';
 export default function App() {
+    const { userId ,role  } = useAuth()
+    const [keyword,setKeyword]=useState("")
+    const [replay,setReplay] = useState("")
+    const [fallback_message ,setFallback_Message] = useState("")
+    console.log("***********",userId);
+    
+    const HandleChatBot = async(e) =>{
+        e.preventDefault()
+        const data = {
+            user_id:userId ,
+            reply: replay, 
+            keyword,
+            fallback_message
+        }
+        console.log("data",data);
+        
+        try{
+            const res = await chatBot(data)
+            console.log("res",res);
+             toast.success("Chatbot created successfully!");
+            setReplay("")
+            setKeyword("")
+            setFallback_Message("")
+        }catch(e){
+            console.log(e)
+        }
+
+    }
     return (
         <div className="flex gap-5 min-h-screen bg-gray-100 p-4">
 
@@ -41,6 +73,8 @@ export default function App() {
                         <Inputs
                             type="text"
                             placeholder="Enter Bot Name"
+                            value={keyword}
+                            onChange={(e) => setKeyword(e)}
                             inputClassName="w-[200px] h-[50px] mt-1 rounded-2xl bg-gray-200 border-none focus:outline-none focus:ring-0 focus:border-none" />
                     </div>
 
@@ -50,10 +84,20 @@ export default function App() {
                         <Inputs
                             type="text"
                             placeholder="Enter Description"
+                            value={replay}
+                            onChange={(e) => setReplay(e)}
                             inputClassName="w-[200px] h-[70px] mt-1 rounded-2xl bg-gray-200 border-none focus:outline-none focus:ring-0 focus:border-none"
                         />
                     </div>
-
+  <div>
+                        <p className="font-medium text-gray-800 mb-1">Fallback_Message</p>
+                        <Inputs
+                            type="text"
+                            placeholder="Fallback_Message"
+                                    value={fallback_message}
+                            onChange={(e) => setFallback_Message(e)}
+                            inputClassName="w-[200px] h-[50px] mt-1 rounded-2xl bg-gray-200 border-none focus:outline-none focus:ring-0 focus:border-none" />
+                    </div>
                     {/* Bot Avatar */}
                     <div>
                         <p className="font-medium text-gray-800 mb-2">Bot Avatar</p>
@@ -68,6 +112,14 @@ export default function App() {
                             }}
                         />
                     </div>
+
+                     <button
+                        className="w-full color text-white font-semibold py-3 rounded-2xl transition duration-300"
+                        onClick={HandleChatBot}
+                    >
+                        Chat With Us
+                    </button>
+                    <ToastContainer/>
                 </div>
             </div>
 
@@ -99,9 +151,7 @@ export default function App() {
                     {/* Chat Button */}
                     <button
                         className="w-full color text-white font-semibold py-3 rounded-2xl transition duration-300"
-                        onClick={() => {
-
-                        }}
+                        // onClick={HandleChatBot}
                     >
                         Chat With Us
                     </button>

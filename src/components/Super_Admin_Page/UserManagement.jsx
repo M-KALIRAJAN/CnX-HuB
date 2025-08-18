@@ -3,21 +3,22 @@ import { PiDotsThreeOutlineVerticalFill } from "react-icons/pi";
 import Table from '../../utils/Table';
 import { useRef } from 'react';
 import Switch from "react-switch";
-
+import { IoSearch } from "react-icons/io5";
+import Inputs from '../../utils/Inputs';
 export default function UserManagement() {
     const [selectedRow, setSelectedRow] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef(null);
    const [showUpdateModal, setShowUpdateModal] = useState(false);
    const [isSwitchOn, setIsSwitchOn] = useState(true);
-    const headers = ["Id", "OfficeName", "Adress","Status", "ManageUserStatus","Actions", ];
-   const columns = ["Id", "OfficeName", "Adress", "Status", "ManageUserStatus", "Actions",    ];
+    const headers = ["Id", "OfficeName", "Adress","Status", "ManageUserStatus","Operations", ];
+   const columns = ["Id", "OfficeName", "Adress", "Status", "ManageUserStatus", "Operations",    ];
  const data = [
   {
     Id: "file1",
     OfficeName: "category1",
     Adress: "2022-01-01",
-    Status: "Active",
+    Status: "Deactive",
 ManageUserStatus: (
   <div title={isSwitchOn ? "Active: Approve User" : "Inactive: Reject User"}>
     <Switch
@@ -36,7 +37,7 @@ ManageUserStatus: (
   </div>
 ),
 
-    Actions:<PiDotsThreeOutlineVerticalFill size={23}  />
+    Operations:<PiDotsThreeOutlineVerticalFill size={23}  />
 
   },
 ];
@@ -68,7 +69,7 @@ ManageUserStatus: (
 
     const tableData = data.map((row) => ({
     ...row,
-    Actions: (
+    Operations: (
       <PiDotsThreeOutlineVerticalFill
         size={23}
         className="cursor-pointer"
@@ -77,15 +78,29 @@ ManageUserStatus: (
     ),
   }));
   return (
-      <div className="w-full h-auto flex flex-col gap-10 overflow-x-hidden">
-     <h2 className='font-bold text-2xl'>All Users List</h2> 
+      <div className="w-full h-auto flex flex-col  overflow-x-hidden">
+     <h2 className='font-bold text-2xl pl-2'>All Users List</h2> 
+
+     <div className="w-[250px] mt-2.5 relative pl-2.5">
+      
+       <span className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-500 text-lg">
+         <IoSearch />
+       </span>
+     
+       <Inputs
+         name="search"
+         type="text"
+         placeholder="Search Contact"
+         inputClassName="bg-white rounded-3xl pl-10" 
+       />
+     </div>
      <Table  headers={headers} columns={columns} data={tableData} />
 
           {/* Modal */}
       {showModal && (
         <div 
         ref={modalRef} 
-        className="absolute top-30 right-45 transform -translate-x-1/2 w-36 p-3 bg-white shadow-lg rounded-xl z-50 border border-gray-200">
+        className="absolute top-30 right-5 transform -translate-x-1/2 w-36 p-3 bg-white shadow-lg rounded-xl z-50 border border-gray-200">
 
 
           <div className="flex flex-col">
@@ -168,3 +183,6 @@ ManageUserStatus: (
       </div>
   )
 }
+
+
+

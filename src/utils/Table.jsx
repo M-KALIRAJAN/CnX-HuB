@@ -1,3 +1,5 @@
+
+
 export default function Table({ headers, columns, data }) {
   return (
     <div className="overflow-x-auto p-4">
@@ -11,19 +13,8 @@ export default function Table({ headers, columns, data }) {
             ))}
           </tr>
         </thead>
-        {/* <tbody className="bg-[#F8F8F8]">
-          
-          {data.map((row, rowIndex) => (
-            <tr key={rowIndex} className="border-t border-gray-200">
-              {columns.map((key, colIndex) => (
-                <td key={colIndex} className="px-4 py-4">
-                  {row[key]}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody> */}
-                <tbody className="bg-[#F8F8F8]">
+
+        <tbody className="bg-[#F8F8F8]">
           {data.length === 0 ? (
             <tr>
               <td
@@ -37,8 +28,43 @@ export default function Table({ headers, columns, data }) {
             data.map((row, rowIndex) => (
               <tr key={rowIndex} className="border-t border-gray-200">
                 {columns.map((key, colIndex) => (
-                  <td key={colIndex} className="px-4 py-4">
-                    {row[key]}
+                  <td key={colIndex} className="px-3 py-2">
+                    {/* Actions Button */}
+                    {key === "Actions" ? (
+                      <div className="flex items-center">
+                        <button
+                          className={`h-8 px-4 rounded-[10px] font-bold cursor-pointer ${row["Status"] !== "Active"
+                              ? "bg-green-200 text-green-700"
+                              : "bg-red-200 text-red-700"
+                            }`}
+                        >
+                          {row["Status"] === "Active" ? "Deactive" : "Active"}
+                        </button>
+                      </div>
+                    ) : key === "Status" ? (
+                      row[key] === "Active" ? (
+                        <span className="inline-block bg-green-100 text-green-700 text-sm font-medium px-5 py-0.5 rounded-full">
+                          Active
+                        </span>
+                      ) : (
+                        <span className="inline-block bg-red-100 text-red-700 text-sm font-medium px-5 py-0.5 rounded-full">
+                          Deactive
+                        </span>
+                      )
+                    ) : key === "Progress" ? (
+                      row[key] !== "read" ? (
+                        <span className="inline-block bg-green-100 text-green-700 text-sm font-medium px-5 py-0.5 rounded-full">
+                          Read
+                        </span>
+                      ) : (
+                        <span className="inline-block bg-red-100 text-red-700 text-sm font-medium px-5 py-0.5 rounded-full">
+                          UnRead
+                        </span>
+                      )
+                    ) :
+                      (
+                        row[key]
+                      )}
                   </td>
                 ))}
               </tr>

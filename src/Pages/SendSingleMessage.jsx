@@ -5,7 +5,9 @@ import SelectInput from "../utils/SelectInput";
 import { FiSend } from "react-icons/fi";
 import { SelectTemplate, SendSingleMsgs } from "../api/ApiServices";
 import { debugLog } from "../utils/debugLog";
-
+import { useAuth } from "../context/AuthContext";
+import { ToastContainer, toast } from 'react-toastify';
+import ClipLoader from "react-spinners/ClipLoader";
 export default function SendSingleMessage() {
   const [number, setNumber] = useState("");
   const [templateList, setTemplateList] = useState([]);
@@ -14,15 +16,20 @@ export default function SendSingleMessage() {
   const [headerMedia, setHeaderMedia] = useState(null);
   const [headerType, setHeaderType] = useState("");
   const [responseMessage, setResponseMessage] = useState(null);
-
+  const { userId, role } = useAuth()
+    const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchTemplates = async () => {
-      const user_id = localStorage.getItem("user_id");
-      const templates = await SelectTemplate(user_id);
+
+      const templates = await SelectTemplate(userId);
+      console.log("templates",templates);
+      
       setTemplateList(templates || []);
     };
     fetchTemplates();
+    
   }, []);
+
 
   const handleTemplateChange = (e) => {
     const index = parseInt(e.target.value);
@@ -32,6 +39,7 @@ export default function SendSingleMessage() {
     setHeaderType("");
     setResponseMessage(null);
   };
+
 
   const handleParamChange = (compIndex, paramIndex, value) => {
     setParams((prev) => ({
@@ -46,9 +54,9 @@ export default function SendSingleMessage() {
   };
 
   const HandleSendSingleMsg = async () => {
-    const user_id = localStorage.getItem("user_id");
-    const tmpl = templateList[selectedIndex];
 
+    const tmpl = templateList[selectedIndex];
+setLoading(true); 
     const formData = new FormData();
     formData.append("to", number);
     formData.append("template", tmpl.name);
@@ -140,16 +148,28 @@ export default function SendSingleMessage() {
     if (hasHeaderMedia && headerMedia instanceof File) {
       formData.append("header_type", detectedHeaderFormat);
       formData.append("header_media", headerMedia);
+       console.log("📤 header_type:", detectedHeaderFormat);
+  console.log("📤 header_media:", {
+    name: headerMedia.name,
+    size: `${(headerMedia.size / 1024).toFixed(2)} KB`,
+    type: headerMedia.type,
+  });
     }
+    console.log(formData);
 
     try {
-      const res = await SendSingleMsgs(user_id, formData);
+      const res = await SendSingleMsgs(userId, formData);
+      console.log(res, "%%%%");
+toast.success("Message sent successfully!");
       setResponseMessage(" Message sent successfully!");
+
     } catch (e) {
       setResponseMessage(" Failed to send message.");
       debugLog("SendSingleMsgs Error:", e.response?.data || e.message);
+    }finally {
+      setLoading(false); // Stop loader
     }
-  };  
+  };
 
   const selectedTemplate =
     selectedIndex !== null ? templateList[selectedIndex] : null;
@@ -196,10 +216,7 @@ export default function SendSingleMessage() {
                   key={compIndex}
                   className="p-4 bg-gray-50 border border-gray-100 rounded-2xl"
                 >
-                  <p className="text-sm mb-2">
-                    <strong>Type:</strong> {comp.type} <br />
-                    <strong>Format:</strong> {comp.format || "TEXT"}
-                  </p>
+                 
 
                   {(comp.type === "BODY" ||
                     (comp.type === "HEADER" && comp.format === "TEXT")) &&
@@ -232,8 +249,8 @@ export default function SendSingleMessage() {
                             comp.format === "IMAGE"
                               ? "image/*"
                               : comp.format === "VIDEO"
-                              ? "video/*"
-                              : ".pdf,.doc,.docx"
+                                ? "video/*"
+                                : ".pdf,.doc,.docx"
                           }
                           onChange={(e) =>
                             handleFileChange(e.target.files[0], comp.format)
@@ -246,12 +263,22 @@ export default function SendSingleMessage() {
               );
             })}
 
-            <Button
-              text="Send"
-              className="w-full mt-5"
-              onClick={HandleSendSingleMsg}
-              icon={<FiSend className="text-white text-sm" />}
-            />
+           <button
+  type="submit"
+  onClick={HandleSendSingleMsg}
+  className="w-full h-[45px] flex items-center justify-center gap-2 text-white bg-[#905CC1] rounded-sm hover:bg-[#7a3fb8] transition"
+>
+  {loading ? (
+    <ClipLoader size={24} color="#fff" />
+  ) : (
+    <>
+      <FiSend className="text-white text-sm" />
+      Send
+    </>
+  )}
+</button>
+
+             <ToastContainer />
           </div>
         )}
 

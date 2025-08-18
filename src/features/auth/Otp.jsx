@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import Inputs from "../../utils/Inputs";
-import Apple from "../../assets/Apple.svg";
-import Fb from "../../assets/Fb.svg";
-import Google from "../../assets/Google.svg";
+
 import Loginlogo from "../../assets/login-logo.jpg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { OTP } from "../../api/ApiServices";
@@ -11,6 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
 import logo from "../../assets/cnx_logo.svg";
+import ClipLoader from "react-spinners/ClipLoader"; // Used instead of Oval
 export default function Otp() {
   const { login, role } = useAuth()
   const location = useLocation();
@@ -19,6 +18,7 @@ export default function Otp() {
 
   const [otp, setOtp] = useState("");
   const [otpError, setOtpError] = useState(null);
+   const [loading, setLoading] = useState(false);
 
 
   const handleOtp = async (e) => {
@@ -33,10 +33,10 @@ export default function Otp() {
     }
 
     try {
-      const payload = { phone, otp };
+      // const payload = { phone, otp };
 
-      const data = await OTP(payload);
-      console.log("payload", payload);
+      // const data = await OTP(payload);
+      // console.log("payload", payload);
 
       //       if (data?.status === "verified") {
 
@@ -63,20 +63,20 @@ export default function Otp() {
 
       //       } 
       if (data?.status === "verified") {
+          setLoading(true); // Start loader
         const role = "superadmin";
-        // login(data.data.user_id, data.data.name, role);
-        login(data.data.user_id, data.data.name);
+        login(data.data.user_id, data.data.name, role);
+        // login(data.data.user_id, data.data.name);
         toast.success("Login successful!");
 
         // if (role === "superadmin") {
         //   console.log("role", role);
 
         //   setTimeout(() => {
-        //     navigate("/admin-dashboard");
-        //   }, 150);
+        //     navigate("/admin_dashboard");
+        //   }, 450);
         // } else {
         //   console.log("kjhhfioh");
-
         //   navigate("/Performance-Hub");
         // }
           navigate("/Performance-Hub");
@@ -85,9 +85,13 @@ export default function Otp() {
         debugLog("OTP verification failed:", data.message);
         setOtpError(data.message)
       }
+    
     } catch (err) {
       debugLog("Error:", err.message);
+    } finally {
+      setLoading(false); // Stop loader
     }
+    
   };
   return (
     <div className="flex flex-col md:flex-row gap-5 justify-around items-center min-h-screen bg-gray-100 px-4 py-10">
@@ -134,7 +138,11 @@ export default function Otp() {
             type="submit"
             className="w-full h-[45px] text-white bg-[#905CC1] rounded-sm hover:bg-[#7a3fb8] transition"
           >
-            Login
+              {loading ? (
+              <ClipLoader size={24} color="#fff" />
+              ):(
+            "Login"
+          )}
           </button>
           <ToastContainer />
         </form>

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Table from "../../utils/Table";
 import { PiDotsThreeOutlineVerticalFill } from "react-icons/pi";
+import Inputs from "../../utils/Inputs";
+import { IoSearch } from "react-icons/io5";
 export default function YourComponent() {
   const [account, setAccount] = useState("Activate");
    const headers = ["Id", "OfficeName", "Adress","Status", "Actions", ];
@@ -11,11 +13,9 @@ export default function YourComponent() {
     OfficeName: "category1",
     Adress: "2022-01-01",
     Status: "Active",
-    Actions: <div className="items-center flex ">
-  <button className= " color h-8 w-26 rounded-[10px] items-center cursor-pointer text-white font-bold "> DEACTIVE</button>
-    </div>
+    
    
-
+  
   },
 ];
 
@@ -26,16 +26,15 @@ export default function YourComponent() {
     Id: "file1",
     OfficeName: "category1",
     Adress: "2022-01-01",
-    Status: "Active",
-    Actions: <div className="items-center flex ">
-  <button className= " color h-8 w-26 rounded-[10px] items-center cursor-pointer text-white font-bold "> ACTIVE</button>
-    </div>
+    Status: "Deactive",
+ 
+    
    
 
   },
 ];
   return (
-    <div className="w-full h-auto flex flex-col gap-10 overflow-x-hidden">
+    <div className="w-full h-auto flex flex-col  overflow-x-hidden">
       <div className="flex">
        <div
           className={`h-[50px] w-[100px] rounded-l-2xl flex items-center justify-center cursor-pointer ${
@@ -55,6 +54,23 @@ export default function YourComponent() {
           <h2 className="font-bold">Deactivate</h2>
         </div>
       </div>
+      
+       
+   {/* Fixed Search Input with icon inside input */}
+<div className="w-[250px] mt-2.5 relative pl-2.5">
+ 
+  <span className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-500 text-lg">
+    <IoSearch />
+  </span>
+
+  <Inputs
+    name="search"
+    type="text"
+    placeholder="Search Contact"
+    inputClassName="bg-white rounded-3xl pl-10" 
+  />
+</div>
+
 
       {account === "Activate" && <Table headers={headers} columns={columns} data={data} />}
       {account === "Deactivate" && <Table headers={header} columns={column} data={dat} />}

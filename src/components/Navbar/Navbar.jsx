@@ -30,7 +30,7 @@ export default function Navbar() {
  
 
   const HandleNotification = () => {
-     navigate("/live");
+     navigate("/Realtime-chat");
   };
   return (
     <div className="h-[48px] m-5 relative">

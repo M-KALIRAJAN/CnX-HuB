@@ -1,48 +1,66 @@
 import { useState } from "react";
 import Inputs from "../../utils/Inputs";
-import Apple from "../../assets/Apple.svg";
-import Fb from "../../assets/Fb.svg";
-import Google from "../../assets/Google.svg";
+import Loginlogo from "../../assets/login-logo.jpg";
+import logo from "../../assets/cnx_logo.svg";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../api/ApiServices";
+import { login as loginAPI } from "../../api/ApiServices";
 import { motion } from "framer-motion";
 import { debugLog } from "../../utils/debugLog";
-import Loginlogo from "../../assets/login-logo.jpg";
-import ClipLoader from "react-spinners/ClipLoader"; // Used instead of Oval
-import logo from "../../assets/cnx_logo.svg";
-export default function LoginPage() {
-  const [number, setNumber] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+import ClipLoader from "react-spinners/ClipLoader";
+import { useAuth } from "../../context/AuthContext";
+import { BsFillEyeSlashFill, BsFillEyeFill } from "react-icons/bs";
 
+export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    const newErrors = {};
 
-    if (number === "") {
-      setError("Field cannot be empty");
+    // Manual validation
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    if (!password.trim()) {
+      newErrors.password = "Password is required";
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      setLoading(false);
       return;
-    } else if (number.length < 10) {
-      setError("Number must be at least 10 digits");
-      return;
-    } else {
-      setError("");
     }
 
     try {
-   
-      setLoading(true); // Start loader
-      const data = await login({ phone: number });
+      const response = await loginAPI(email, password);
 
-      if (data.status_code === 200) {
-        navigate("/otp", { state: { phone: number } });
+      if (response?.status === "success") {
+        const { user_id, name, role } = response;
+        console.log("data", response);
+
+        // Save to context
+        login(user_id, name);
+
+        navigate("/Performance-Hub");
       } else {
-        debugLog("Login failed with status:", data.status_code);
+        setErrors({ general: response?.message || "Login failed" });
       }
     } catch (err) {
       debugLog("Login Failed:", err);
+      setErrors({ general: "Something went wrong. Try again." });
     } finally {
-      setLoading(false); // Stop loader
+      setLoading(false);
     }
   };
 
@@ -52,7 +70,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex gap-5 justify-around items-center min-h-screen bg-gray-100 px-4">
-      {/* Left Panel */}
+      {/* Left Side Image */}
       <motion.div
         initial={{ opacity: 0, x: -60 }}
         animate={{ opacity: 1, x: 0 }}
@@ -62,7 +80,7 @@ export default function LoginPage() {
         <img src={Loginlogo} alt="Login Visual" />
       </motion.div>
 
-      {/* Right Panel */}
+      {/* Right Panel - Login Form */}
       <motion.div
         initial={{ opacity: 0, y: 60 }}
         animate={{ opacity: 1, y: 0 }}
@@ -70,64 +88,72 @@ export default function LoginPage() {
         className="p-6 rounded-2xl bg-white w-full max-w-sm shadow-md"
       >
         <form onSubmit={handleLogin}>
-          <div className="flex justify-center">
-       <img src={logo} className=" h-[80px] w-[120px]"/>
+          <div className="flex justify-center mb-3">
+            <img src={logo} className="h-[80px] w-[120px]" alt="logo" />
           </div>
-   
-          <motion.h2
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-[18px] font-bold mb-6 text-center"
-          >
-            Login With OTP!
-          </motion.h2>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            
+          <h2 className="text-[18px] font-bold mb-6 text-center">
+            WELCOME TO CNX-HUB LOGIN NOW !
+          </h2>
 
+          {/* Email */}
+          <Inputs
+            label="Email"
+            name="Email"
+            type="email"
+            placeholder="Enter the Email"
+            value={email}
+            onChange={setEmail}
+            externalError={errors.email}
+          />
 
+          {/* Password + toggle */}
+          <div className="relative">
             <Inputs
-              label="Mobile Number"
-              name="phone"
-              type="phone"
-              placeholder="Enter the number"
-              value={number}
-              onChange={setNumber}
-              externalError={error}
+              label="Password"
+              name="Password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter the Password"
+              value={password}
+              onChange={setPassword}
+              externalError={errors.password}
             />
-          </motion.div>
+            <span
+              className="absolute right-4 top-[45px] cursor-pointer text-gray-600"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? <BsFillEyeFill /> : <BsFillEyeSlashFill />}
+            </span>
+            <div className=" text-end">
+ <h2
+              className="text-sm text-[#905CC1] hover:underline cursor-pointer font-medium"
+              // onClick={goToCreateAccount}
+            >
+              <span>Forget Password ?</span> 
+            </h2>
+            </div>
+            
+          </div>
 
-          <motion.button
+          {/* Submit */}
+          <button
             type="submit"
-            whileTap={{ scale: 0.95 }}
-            whileHover={{ scale: 1.03 }}
             className="w-full h-[45px] text-white bg-[#905CC1] rounded-sm hover:bg-[#7a3fb8] transition mt-4 flex items-center justify-center"
           >
-            {loading ? (
-              <ClipLoader size={24} color="#fff" />
-            ) : (
-              "Send OTP"
-            )}
-          </motion.button>
+            {loading ? <ClipLoader size={24} color="#fff" /> : "Login"}
+          </button>
 
-          <motion.div
-            className="w-full text-center mb-2 mt-5"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
+
+
+          {/* Register link */}
+          <div className="text-center mt-5">
             <h2
               className="text-sm text-[#905CC1] hover:underline cursor-pointer font-medium"
               onClick={goToCreateAccount}
             >
               <span>New User?</span> Create Account
             </h2>
-          </motion.div>
+          </div>
         </form>
       </motion.div>
     </div>

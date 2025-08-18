@@ -8,15 +8,29 @@ import { FaRegFolderOpen } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 import Table from "../utils/Table";
 import { TemplateHistroy } from "../api/ApiServices";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 export default function TemplateLibrary() {
   const [search, setSearch] = useState("");
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate()
+     const { userId ,role  } = useAuth()
   const templateOptions = [
     { value: "Select Category", label: "Select Category" },
     { value: "+1", label: "+1" },
     { value: "+44", label: "+44" },
     { value: "+61", label: "+61" },
   ];
+  const status =[
+    { value: "Status", label: "Status" },
+    { value: "Approved", label: "Approved" },
+    { value: "Reject", label: "Reject" },
+  ];
+    const category =[
+    { value: "category", label: "category" },
+    { value: "MARKETING", label: "MARKETING" },
+    
+  ]
 
   const headers = [
     "Template Name",
@@ -33,11 +47,13 @@ export default function TemplateLibrary() {
     "action",
   ];
   const [tableData, setTableData] = useState([]);
-  const user_id = localStorage.getItem("user_id");
+  
   useEffect(() => {
     const fetchTemplate = async () => {
        setLoading(true);
-      const response = await TemplateHistroy(user_id);
+      const response = await TemplateHistroy(userId);
+      console.log("response",response);
+      
       if (response?.status === "success") {
         const formatted = response.templates.map((template) => ({
           templatename: (
@@ -89,8 +105,8 @@ export default function TemplateLibrary() {
         </div>
         <div className=" w-[170px] items-center mt-2">
           <Button
-            text="Create Ticket"
-            onClick={() => console.log("Search clicked")}
+            text="Create Template"
+            onClick={() =>navigate('/Layout-Hub') }
             icon={
               <LuFilePlus2 className="text-white text-sm text-center items-center" />
             }
@@ -98,7 +114,27 @@ export default function TemplateLibrary() {
         </div>
       </div>
       <div className=" flex gap-3 items-center mt-4">
+        <div className="flex gap-3 items-center mt-3">
+          <h2>Status</h2>
+ <div className="w-[200px] ">
+          <SelectInput
+            options={status}
+            defaultValue="Select Category"
+            onChange={(e) => console.log(e.target.value)}
+          />
+        </div>
+        </div>
+           <div className="flex gap-3 items-center mt-3">
+          <h2>Category</h2>
         <div className="w-[200px]">
+          <SelectInput
+            options={category}
+            defaultValue="Select Category"
+            onChange={(e) => console.log(e.target.value)}
+          />
+        </div>
+        </div>
+        {/* <div className="w-[200px]">
           <SelectInput
             options={templateOptions}
             defaultValue="Select Category"
@@ -111,21 +147,7 @@ export default function TemplateLibrary() {
             defaultValue="Select Category"
             onChange={(e) => console.log(e.target.value)}
           />
-        </div>
-        <div className="w-[200px]">
-          <SelectInput
-            options={templateOptions}
-            defaultValue="Select Category"
-            onChange={(e) => console.log(e.target.value)}
-          />
-        </div>
-        <div className="w-[200px]">
-          <SelectInput
-            options={templateOptions}
-            defaultValue="Select Category"
-            onChange={(e) => console.log(e.target.value)}
-          />
-        </div>
+        </div> */}
       </div>
       <div className="mt-8 w-auto h-auto bg-[#F8F8F8] p-2 rounded-2xl ">
                {loading ? (

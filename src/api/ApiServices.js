@@ -3,14 +3,15 @@ import API from "./BaseUrl";
 import { debugLog } from "../utils/debugLog";
 
 // Login
-export const login = async (phone) => {
+export const login = async (email,password) => {
   try {
-    console.log("phone", phone);
-    console.log("API", API);
-
+const payload ={
+  "email": email,
+  "password": password
+}
     const response = await axios.post(
-      "https://demo.madurasoft.in/api/login/send-otp/",
-      phone
+      "https://demo.madurasoft.in/api/login/",
+     payload
     );
    console.log("response",response.data);
    
@@ -100,12 +101,14 @@ export const CreateTemplates = async ({ formData, user_id }) => {
 
 // Register
 
-export const Register = async (fullname, email, phone) => {
+
+
+export const Register = async (formDataObj) => {
   try {
     const formData = new FormData();
-    formData.append("fullname", fullname);
-    formData.append("email", email);
-    formData.append("phone", phone);
+    for (const key in formDataObj) {
+      formData.append(key, formDataObj[key]);
+    }
 
     const response = await axios.post(
       "https://demo.madurasoft.in/api/register/",
@@ -116,11 +119,13 @@ export const Register = async (fullname, email, phone) => {
         },
       }
     );
+
     return response.data;
   } catch (e) {
-    debugLog("Register error:", e.message);
+    console.error("Register error:", e.message);
   }
 };
+
 
 //CreateAccount
 export const CreateAccounts = async (accountdata) => {
@@ -218,6 +223,30 @@ export const BulkMessageAPI = async (user_id, payload) => {
     formData.append("recipients", JSON.stringify(payload.recipients));
     formData.append("template", payload.template);
     formData.append("lang", payload.lang);
+    formData.append("media_url", JSON.stringify(payload.media_url));
+ const headerType = payload.media_url ? payload.media_url.type.split("/")[0] : "";
+formData.append("header_type", headerType);
+
+
+    // Log media_url if it exists
+    if (payload.media_url) {
+      console.log("📤 media_url:", {
+        name: payload.media_url.name,
+        size: `${(payload.media_url.size / 1024).toFixed(2)} KB`,
+        type: payload.media_url.type .split("/")[0],
+      });
+      console.log("📤 header_type:", headerType);
+    } else {
+      console.log("📤 media_url: none");
+      console.log("📤 header_type: none");
+    }
+
+    // Log all formData entries
+    console.log("📤 FormData contents:");
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key} : ${value}`);
+    }
+    // Send request
     const response = await axios.post(
       `https://demo.madurasoft.in/send-bulk/?user_id=${user_id}`,
       formData,
@@ -232,9 +261,15 @@ export const BulkMessageAPI = async (user_id, payload) => {
     return response.data;
   } catch (error) {
     const errorMsg = error?.response?.data?.detail || error.message;
- debugLog(errorMsg)
+    debugLog(errorMsg);
   }
 };
+
+
+
+
+// 🔹 API Service
+
 
 // Dashboard
 export const Dashboard = async (user_id) => {
@@ -263,21 +298,70 @@ export const Reports = async (user_id) => {
 };
 
 // Live Chat
-export const LiveChat = async (user_id) => {
+
+export const LiveChat = async(user_id)=>{
+  try{
+     const response = await axios.get(
+      `https://demo.madurasoft.in/api/received-messages/?user_id=${user_id}`,
+   
+  );
+     console.log("response", response.data.phone_list);
+     return response.data;
+  }catch(err){
+    debugLog(err.message)
+  }
+}
+
+export const LiveChatSend = async (phonenumber,user_id) => { 
   try {
-    const response = await axios.get(
-      `https://demo.madurasoft.in/api/replies/?user_id=${user_id}`
-    );
+    const response = await axios.post(
+        `https://demo.madurasoft.in/api/received-messages/?user_id=${user_id}&phone=${phonenumber}`,
+    )
     console.log("response", response.data);
     return response.data;
+  }catch(err){
+    debugLog(err.message)
+  }
+  
+}
+export const fetchLatestMessages  = async (user_id,phonenumber) => { 
+  try {
+    const phone = phonenumber.slice(2)
+    const response = await axios.get(
+        `https://demo.madurasoft.in/api/fetch-latest-messages?user_id=${user_id}&phone=${phone}`,
+    )
+    console.log("response", response.data);
+    return response.data;
+  }catch(err){
+    debugLog(err.message)
+  }
+  
+}
+export const SendManually = async (formData) => {
+  
+  try {
+    const response = await axios.post(
+      "https://demo.madurasoft.in/send_manual_reply/",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    console.log(response.data);
+    return response.data;
   } catch (err) {
-    console.log(err.message);
+    console.error("Upload error:", err.message);
+    throw err;
   }
 };
 
 
-
+//ConductFile
 export const conductFile = async (formData) => {
+  console.log("*********88888",formData);
+  
   try {
     const response = await axios.post(
       "https://demo.madurasoft.in/api/contact-file/",
@@ -296,3 +380,17 @@ export const conductFile = async (formData) => {
   }
 };
 
+//ChatBot
+export const chatBot = async (formData) => {
+
+  try{
+    const response = await axios.post("https://demo.madurasoft.in/api/chatbot/create/",
+      formData,
+    )
+    console.log(response.data);
+    return response.data
+  }
+  catch(e){
+    console.log(e);
+  }
+}

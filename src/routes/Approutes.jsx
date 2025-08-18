@@ -35,7 +35,7 @@ const Chatbot = lazy(() => import("../Pages/Chatbot"));
 //SUPER-ADMIN
 
 export default function Approutes() {
-  const { userId   } = useAuth()
+  const { userId ,role  } = useAuth()
   return (
     <Suspense fallback={<div className="text-center mt-10"></div>}>
       <Routes>
@@ -57,7 +57,7 @@ export default function Approutes() {
 
        {/* {role === "superadmin" && (
       <><Route
-            path="/admin-dashboard"
+            path="/admin_dashboard"
             element={<Maduralayout>
               <SuperAdminPage />
             </Maduralayout>} />
@@ -84,7 +84,7 @@ export default function Approutes() {
               </Maduralayout>} />
               </>
     )} */}
-         {userId && (
+         {/* {userId && ( */}
           <>
             <Route
               path="/Performance-Hub"
@@ -185,7 +185,7 @@ export default function Approutes() {
 
 
           </>
-        )}
+        {/* )} */}
 
         {/* Fallback route */}
         <Route path="*" element={<NotFound />} />

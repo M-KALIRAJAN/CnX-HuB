@@ -12,13 +12,12 @@ export const AuthProvider = ({ children }) => {
     const storedName = sessionStorage.getItem("name");
       // const storedRole = sessionStorage.getItem("role");
   // if (storedRole) setRole(storedRole);
-  //   if (storedUserId) setUserId(storedUserId);
-  //   if (storedName) setName(storedName);
-  // }, []);
-    // if (storedRole) ;
-    
-    if (storedName) setName(storedName);
     if (storedUserId) setUserId(storedUserId);
+    if (storedName) setName(storedName);
+
+   
+    
+
   }, []);
 
   // const login = (user_id, name,userRole = "superadmin") => {
@@ -50,7 +49,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ userId, login, logout, name }}>
+    <AuthContext.Provider value={{ userId, login, logout, name}}>
       {children}
     </AuthContext.Provider>
   );

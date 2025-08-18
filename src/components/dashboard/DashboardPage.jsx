@@ -176,7 +176,7 @@ export default function DashboardPage() {
           <h1 className="font-bold text-2xl text-[#59565C] mb-4">
             Recent Activity
           </h1>
-          <div className="max-h-[90px] overflow-y-auto pr-2">
+          {/* <div className="max-h-[90px] overflow-y-auto pr-2">
             {recent_activity.slice(0, 10).map((activity, index) => (
               <div
                 key={index}
@@ -189,7 +189,26 @@ export default function DashboardPage() {
                 </div>
               </div>
             ))}
-          </div>
+          </div> */}
+          <div className="max-h-[90px] overflow-y-auto pr-2">
+  {recent_activity && recent_activity.length > 0 ? (
+    recent_activity.slice(0, 10).map((activity, index) => (
+      <div
+        key={index}
+        className="flex flex-col sm:flex-row gap-5 items-start sm:items-center mb-4"
+      >
+        <PiChecksBold className="text-[#905CC1] mt-1" />
+        <div className="flex gap-5">
+          <h2 className="font-medium">{activity.event}</h2>
+          <p className="text-gray-500 text-sm">- {activity.time}</p>
+        </div>
+      </div>
+    ))
+  ) : (
+    <p className="text-gray-400 text-center">No recent activity found</p>
+  )}
+</div>
+
         </div>
         {/* <div className="w-[290px] h-[170px] mt-5 bg-[#F8F8F8] rounded-2xl">
           <p className="text-center font-bold mt-5">Current Discription Plan</p>

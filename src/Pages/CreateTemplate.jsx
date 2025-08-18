@@ -15,6 +15,8 @@ import { MdCancel } from "react-icons/md";
 import { CreateTemplates } from "../api/ApiServices";
 import axios from "axios";
 import { debugLog } from "../utils/debugLog";
+import { useAuth } from "../context/AuthContext";
+import { ToastContainer, toast } from 'react-toastify';
 export default function CreateTemplate() {
   const [header_format, setHeader_Format] = useState("TEXT");
   const [language, setLanguage] = useState("");
@@ -30,7 +32,7 @@ export default function CreateTemplate() {
   const [loading, setLoading] = useState(false);
   const [header_media, setHeader_Media] = useState(null);
   const fileInputRef = useRef(null);
-
+const { userId ,role  } = useAuth()
   const handleUploadClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
@@ -82,7 +84,7 @@ export default function CreateTemplate() {
   const HandleSubmitTemplate = async () => {
     try {
       setLoading(true);
-      const user_id = localStorage.getItem("user_id");
+      // const user_id = localStorage.getItem("user_id");
 
       const components = [];
 
@@ -155,7 +157,17 @@ export default function CreateTemplate() {
         buttons,
       };
 
-      const response = await CreateTemplates({ formData, user_id });
+      // const user_id = localStorage.getItem("user_id");
+      const response = await CreateTemplates({ formData, user_id: userId });
+      console.log("response",response);
+      setBodyText("");
+      setHeaderText("");
+      setName("")
+      setFooterText("");
+      setPhoneNumber("")
+      setLink("")
+      setText("")
+        toast.success("Template Create successful!");
     } catch (err) {
       debugLog(err?.response?.data || err.message);
     } finally {
@@ -303,7 +315,9 @@ export default function CreateTemplate() {
                 text={loading ? "Submitting..." : "Submit"}
                 onClick={HandleSubmitTemplate}
                 icon={<FaMessage className="text-white text-sm" />}
+                className="w-60 "
               />
+                  <ToastContainer />
             </div>
 
             {/* Dynamic Button Inputs */}

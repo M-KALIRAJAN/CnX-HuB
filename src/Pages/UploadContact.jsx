@@ -33,7 +33,7 @@
 //   formData.append("csv_file", uploadedFiles[0]); 
 //   try{
 //     console.log("***************",formData);
-    
+
 //     await conductFile(formData)
 //      setUploadedFiles([]);
 //     setCategory("");
@@ -41,7 +41,7 @@
 
 //   }catch(err){
 //     console.log(err.message);
-    
+
 //   }
 //   }
 
@@ -62,7 +62,7 @@
 //   ];
 //     const new_category = [
 //     { value: "Dealers", label: "Dealers" },
-  
+
 //   ];
 
 //   return (
@@ -92,7 +92,7 @@
 //       </div>
 
 //       <div className="flex gap-3 mt-6">
-        
+
 //         <div className="w-[600px] h-[450px] items-start flex flex-col justify-start p-3 overflow-y-auto gap-2   rounded-xl">
 //           {uploadedFiles.length === 0 ? (
 //             <p className="text-gray-400 text-sm">No files uploaded yet</p>
@@ -181,21 +181,34 @@
 //     </div>
 //   );
 // }
-import React, { useRef, useState } from "react";
-import SelectInput from "../utils/SelectInput";
+import { useRef, useState, useEffect } from "react";
 import { FiUploadCloud } from "react-icons/fi";
-import { FaRegFolderOpen } from "react-icons/fa";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import { conductFile } from "../api/ApiServices";
+import { FaRegFolderOpen } from "react-icons/fa";
 import { useAuth } from "../context/AuthContext";
+import SelectInput from "../utils/SelectInput";
+import { conductFile } from "../api/ApiServices";
+import { useNavigate } from "react-router-dom";
 
+import { ToastContainer, toast } from 'react-toastify';
 export default function UploadContact() {
   const fileInputRef = useRef();
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [category, setCategory] = useState("");
-
   const [newCategory, setNewCategory] = useState("");
-  const { userId   } = useAuth()
+  const { userId } = useAuth(); 
+  const navigate = useNavigate()
+
+  const Recpicent = [
+    { value: "Select Category", label: "Select Category" },
+    { value: "Add New Category", label: "Add New Category" },
+    { value: "Dealers", label: "Dealers" },
+  ];
+
+  useEffect(() => {
+    console.log("Category:", category);
+    console.log("New Category:", newCategory);
+  }, [category, newCategory]);
 
   const handleClickUpload = () => {
     fileInputRef.current.click();
@@ -212,50 +225,51 @@ export default function UploadContact() {
     );
   };
 
- const handleSubmit = async () => {
-  if (uploadedFiles.length === 0) {
-    alert("Please select a file to upload.");
-    return;
-  }
+  const handleSubmit = async () => {
+    if (uploadedFiles.length === 0) {
+      alert("Please select a file to upload.");
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append("user_id", 3);
+    const formData = new FormData();
+    formData.append("user_id", userId || 3);
 
-  if (category === "Add New category") {
-    formData.append("category", category);
-    formData.append("new_category", newCategory);
-  } else {
-    formData.append("category", category);
-  }
+    if (category === "Add New Category") {
+      if (!newCategory.trim()) {
+        alert("Please enter a name for the new category.");
+        return;
+      }
+      formData.append("category", category);
+      formData.append("new_category", newCategory);
+    } else {
+      formData.append("category", category);
+    }
 
-  formData.append("csv_file", uploadedFiles[0]); // Make sure this is a File object
+    formData.append("csv_file", uploadedFiles[0]);
 
-  // Debugging FormData content
-  for (let pair of formData.entries()) {
-    console.log(pair[0] + ": " + pair[1]);
-  }
+    for (let pair of formData.entries()) {
+      console.log(`${pair[0]}: ${pair[1]}`);
+    }
+console.log("formData",formData);
 
-  try {
-    const response = await conductFile(formData);
-    console.log("Upload successful:", response);
+    try {
+      const response = await conductFile(formData);
+      console.log("Upload successful:", response);
+ toast.success("Upload Contuct successful!");
+      setUploadedFiles([]);
+      setCategory("");
+      setNewCategory("");
 
-    setUploadedFiles([]);
-    setCategory("");
-    setNewCategory("");
-  } catch (err) {
-    console.error("Upload error:", err);
-  }
-};
-
-
-  const Recpicent = [
-    { value: "Add New Category", label: "Add New Category" },
-    { value: "Dealers", label: "Dealers" },
-  ];
-
-  const new_category = [
-    { value: "Dealers", label: "Dealers" },
-  ];
+     
+  setTimeout(() => {
+    navigate('/Connections');
+  }, 3000);
+      
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("Upload failed. Please check your inputs and try again.");
+    }
+  };
 
   return (
     <div className="border border-gray-400 h-auto w-full p-4 rounded-2xl">
@@ -264,28 +278,40 @@ export default function UploadContact() {
       <div className="flex gap-3 mt-3">
         <div className="flex gap-3 items-center">
           <h2>Select category</h2>
-          <SelectInput
-            options={Recpicent}
+          <select
+            className="w-[190px] bg-white border border-gray-300 px-2 py-1 rounded-md"
+            value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-[190px] bg-white"
-          />
+          >
+            {Recpicent.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+
+
         </div>
 
+        {console.log("Category state:", category)}
         {category === "Add New Category" && (
           <div className="flex gap-3 items-center">
             <h2>New category</h2>
-            <SelectInput
-              options={new_category}
+            <input
+              type="text"
+              value={newCategory}
               onChange={(e) => setNewCategory(e.target.value)}
-              className="w-[190px] bg-white"
+              className="w-[190px] bg-white border border-gray-300 px-2 py-1 rounded-md"
+              placeholder="Enter new category name"
             />
           </div>
         )}
+
       </div>
 
       <div className="flex gap-3 mt-6">
         {/* File list section */}
-        <div className="w-[600px] h-[450px] items-start flex flex-col justify-start p-3 overflow-y-auto gap-2 rounded-xl">
+        <div className="w-[600px] h-[450px] flex flex-col justify-start p-3 overflow-y-auto gap-2 rounded-xl">
           {uploadedFiles.length === 0 ? (
             <p className="text-gray-400 text-sm">No files uploaded yet</p>
           ) : (
@@ -319,7 +345,6 @@ export default function UploadContact() {
             <div className="iconbackground items-center">
               <FiUploadCloud size={25} />
             </div>
-
             <h2>
               <span className="font-bold text-[#905CC1] cursor-pointer">
                 Click To Upload
@@ -327,8 +352,6 @@ export default function UploadContact() {
               or drag and drop
             </h2>
             <h2>CSV files only</h2>
-
-            {/* Hidden File Input */}
             <input
               type="file"
               multiple
@@ -371,7 +394,9 @@ export default function UploadContact() {
       >
         Upload Contact File
       </button>
+        <ToastContainer />
     </div>
   );
 }
+
 

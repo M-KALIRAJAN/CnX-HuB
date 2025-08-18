@@ -44,39 +44,39 @@ const HandleUpload = () =>{
       <h2 className="font-bold " style={{ fontFamily: 'Satoshi, sans-serif' }}>Upload Contact's CSV</h2>
 <div className="mt-5 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
   {/* Left Side */}
-  <div className="flex flex-col sm:flex-row flex-wrap gap-3 items-start sm:items-center">
-    <h2 className="text-base font-medium">Select category</h2>
+  {/* <div className="flex flex-col sm:flex-row flex-wrap gap-3 items-start sm:items-center"> */}
+    {/* <h2 className="text-base font-medium">Select category</h2> */}
 
-    <SelectInput
+    {/* <SelectInput
       options={Recpicent}
       defaultValue="normaltemplate"
       onChange={(e) => console.log(e.target.value)}
       className="w-full sm:w-[190px] bg-white"
-    />
+    /> */}
 
-    <div className="mt-2 sm:mt-0">
+    {/* <div className="mt-2 sm:mt-0">
       <Button
         text="Choose CSV"
         onClick={() => console.log("Send clicked")}
         icon={<FaRegFolderOpen className="text-white" />}
       />
-    </div>
-  </div>
+    </div> */}
+  {/* </div> */}
 
   {/* Right Side */}
   <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-start sm:items-center">
-    <p className="text-gray-400 text-sm">* No File Chosen</p>
+    {/* <p className="text-gray-400 text-sm">* No File Chosen</p> */}
 
-    <Button
-      text="Upload"
+    {/* <Button
+      text="Upload Conduct"
       onClick={HandleUpload}
       icon={<MdOutlineFileUpload className="text-white" />}
-    />
+    /> */}
   </div>
 </div>
 
 
-      <div>
+      <div className="flex items-center justify-between">
           <div className="flex gap-3 items-center mt-3">
  <h2>Filter by category</h2>
         <SelectInput
@@ -87,6 +87,11 @@ const HandleUpload = () =>{
         />  
            
         </div>
+           <Button
+      text="Upload Conduct"
+      onClick={HandleUpload}
+      icon={<MdOutlineFileUpload className="text-white" />}
+    />
       </div> 
       <h2 className="font-bold mt-7">Uploaded Files</h2> 
         <div className="mt-8 w-auto h-auto bg-[#F8F8F8] p-2 rounded-2xl ">

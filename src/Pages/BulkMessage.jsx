@@ -6,12 +6,14 @@ import SelectInput from "../utils/SelectInput";
 import {
   BulkMessageAPI,
   ConductCategorie,
+  login,
   SelectTemplate,
   UserCategories,
 } from "../api/ApiServices";
 import Inputs from "../utils/Inputs";
 import { debugLog } from "../utils/debugLog";
-
+import { useAuth } from "../context/AuthContext";
+import { ToastContainer, toast } from 'react-toastify';
 export default function BulkMessage() {
   const [currentTime, setCurrentTime] = useState(
     new Date().toLocaleTimeString()
@@ -27,7 +29,7 @@ export default function BulkMessage() {
   const [headerMediaFile, setHeaderMediaFile] = useState(null);
   const [contactNumbers, setContactNumbers] = useState([]);
   const [mediaURL, setMediaURL] = useState("");
-
+  const { userId, role } = useAuth()
   const Recpicent = [
     { value: "Use Control List", label: "Use Control List" },
     { value: "Enter Number Manually", label: "Enter Number Manually" },
@@ -41,9 +43,11 @@ export default function BulkMessage() {
   }, []);
 
   useEffect(() => {
-    const user_id = localStorage.getItem("user_id");
+
     const fetchUsercategories = async () => {
-      const usercategories = await UserCategories(user_id);
+      const usercategories = await UserCategories(userId);
+      console.log("usercategories", usercategories);
+
       if (
         usercategories?.status === "success" &&
         Array.isArray(usercategories.categories)
@@ -59,13 +63,15 @@ export default function BulkMessage() {
   }, []);
 
   useEffect(() => {
-    const user_id = localStorage.getItem("user_id");
+
     const fetchConductCategories = async () => {
       const data = {
-        user_id: Number(user_id),
+        user_id: Number(userId),
         category_id: Number(selectedCategory),
       };
       const response = await ConductCategorie(data);
+      console.log("ConductCategorie", response);
+
       if (Array.isArray(response)) {
         const formatted = response.map((item) => ({
           label: item.name,
@@ -82,92 +88,170 @@ export default function BulkMessage() {
   }, [selectedCategory]);
 
   useEffect(() => {
-    const user_id = localStorage.getItem("user_id");
+    // const user_id = localStorage.getItem("user_id");
     const fetchSelectTemplate = async () => {
-      const templates = await SelectTemplate(user_id);
+      const templates = await SelectTemplate(userId);
+      console.log("templates", templates);
+
       setTemplatelist(templates || []);
     };
     fetchSelectTemplate();
   }, []);
 
-  const Handlee = async () => {
-    const user_id = localStorage.getItem("user_id");
-    const selectedTemplate = templatelist[selectedIndex];
+//   const Handlee = async () => {
+//     // const user_id = localStorage.getItem("user_id");
+//     const selectedTemplate = templatelist[selectedIndex];
 
-    if (!selectedTemplate) return alert("⚠️ Please select a template.");
-s
-    const recipients =
-      recpicentmode === "Use Control List"
-        ? contactNumbers
-        : number
-            .split(",")
-            .map((n) => n.trim())
-            .filter(Boolean);
+//     if (!selectedTemplate) return alert("⚠️ Please select a template.");
+
+//     const recipients =
+//       recpicentmode === "Use Control List"
+//         ? contactNumbers
+//         : number
+//           .split(",")
+//           .map((n) => n.trim())
+//           .filter(Boolean);
 
 
-    let components = selectedTemplate.components
-      .map((comp, compIndex) => {
-        const format = (comp.format || "").toLowerCase();
-        const isMedia = ["image", "video", "document"].includes(format);
+//     let components = selectedTemplate.components
+//       .map((comp, compIndex) => {
+//         const format = (comp.format || "").toLowerCase();
+//         const isMedia = ["image", "video", "document"].includes(format);
 
-        if (comp.type === "HEADER" && isMedia) return null;
+//         if (comp.type === "HEADER" && isMedia) return null;
 
-        const matches = comp.text?.match(/{{\d+}}/g) || [];
-        const params = matches.map((_, paramIndex) => ({
-          type: "text",
-          text: bulkParams[`${compIndex}_${paramIndex}`] || "",
-        }));
+//         const matches = comp.text?.match(/{{\d+}}/g) || [];
+//         const params = matches.map((_, paramIndex) => ({
+//           type: "text",
+//           text: bulkParams[`${compIndex}_${paramIndex}`] || "",
+//         }));
 
-        return {
-          type: comp.type,
-          format: comp.format || "",
-          parameters: params,
-        };
-      })
-      .filter(Boolean);
+//         return {
+//           type: comp.type,
+//           format: comp.format || "",
+//           parameters: params,
+//         };
+//       })
+//       .filter(Boolean);
+
+//     if (
+//       headerMediaFile &&
+//       selectedTemplate.components.some((comp) => comp.type === "HEADER")
+//     ) {
+//       const headerComp = selectedTemplate.components.find(
+//         (comp) => comp.type === "HEADER"
+//       );
+//       const headerType = headerComp.format.toLowerCase();
+
+//       components.unshift({
+//         type: "HEADER",
+//         format: headerComp.format,
+//         parameters: [
+//           {
+//             type: headerType,
+//             [headerType]: headerMediaFile,
+//           },
+//         ],
+//       });
+ 
+
+
+//     }
+
+//     const payload = {
+//       user_id: userId,
+//       recipients,
+//       template: selectedTemplate.name,
+//       lang: selectedTemplate.language || "en_US",
+//       components,
 
     
-    if (
-      headerMediaFile &&
-      selectedTemplate.components.some((comp) => comp.type === "HEADER")
-    ) {
-      const headerComp = selectedTemplate.components.find(
-        (comp) => comp.type === "HEADER"
-      );
-      const headerType = headerComp.format.toLowerCase();
+//     };
+//  console.log("payload",payload);
+//     try {
+//       console.log("*****c");
+//       const response = await BulkMessageAPI(userId, payload);
+//       console.log("*****", response);
+//       toast.success("BulkMessage Send successful!");
 
-      components.unshift({
-        type: "HEADER",
-        format: headerComp.format,
-        parameters: [
-          {
-            type: headerType,
-            [headerType]: headerMediaFile,
-          },
-        ],
-      });
-    }
+//     } catch (error) {
+//       debugLog(" Error:", error.message);
+//     }
+//   };
 
-    const payload = {
-      user_id,
-      recipients,
-      template: selectedTemplate.name,
-      lang: selectedTemplate.language || "en_US",
-      components,
+
+
+const Handlee = async () => {
+  const selectedTemplate = templatelist[selectedIndex];
+  if (!selectedTemplate) return alert("⚠️ Please select a template.");
+
+  const recipients =
+    recpicentmode === "Use Control List"
+      ? contactNumbers
+      : number
+          .split(",")
+          .map((n) => n.trim())
+          .filter(Boolean);
+
+  let components = selectedTemplate.components
+    .map((comp, compIndex) => {
+      const format = (comp.format || "").toLowerCase();
+      const isMedia = ["image", "video", "document"].includes(format);
+
+      if (comp.type === "HEADER" && isMedia) return null;
+
+      const matches = comp.text?.match(/{{\d+}}/g) || [];
+      const params = matches.map((_, paramIndex) => ({
+        type: "text",
+        text: bulkParams[`${compIndex}_${paramIndex}`] || "",
+      }));
+
+      return {
+        type: comp.type,
+        format: comp.format || "",
+        parameters: params,
+      };
+    })
+    .filter(Boolean);
+
+  // ← Declare mediaMeta before using it
+  let mediaMeta = null;
+  if (headerMediaFile) {
+    mediaMeta = {
+      name: headerMediaFile.name,
+      size: headerMediaFile.size,
+      type: headerMediaFile.type,
     };
+  }
 
-    try {
-      const response = await BulkMessageAPI(user_id, payload);
-    } catch (error) {
-      debugLog(" Error:", error.message);
-    }
+  const payload = {
+    user_id: userId,
+    recipients,
+    template: selectedTemplate.name,
+    lang: selectedTemplate.language || "en_US",
+    components,
+    media_url: mediaMeta, 
   };
 
+ 
+
+  try {
+    const response = await BulkMessageAPI(userId, payload);
+    console.log("response",response);
+    
+    toast.success("BulkMessage Send successful!");
+  } catch (error) {
+    debugLog("Error:", error.message);
+  }
+};
+
+
+ 
   return (
     <div className="min-h-screen overflow-y-auto border border-gray-400 w-full p-4 sm:p-6 md:p-7 rounded-2xl">
       <div className="flex flex-col xl:flex-row gap-5">
         <div className="flex flex-col gap-8 w-full xl:w-[770px]">
-          <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
+          {/* <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
             <div className="flex items-center justify-between px-4 py-3 w-full sm:w-1/2 bg-gray-100 rounded-2xl">
               <div className="flex items-center gap-4">
                 <img src={Wallet} alt="Wallet" className="w-6 h-6" />
@@ -182,7 +266,7 @@ s
               </div>
               <h2 className="text-[#905CC1] font-bold text-base">200</h2>
             </div>
-          </div>
+          </div> */}
 
           <div className="w-full bg-gray-100 p-5 rounded-2xl">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -228,6 +312,22 @@ s
                   defaultValue=""
                   onChange={(e) => setSelectedCategory(e.target.value)}
                 />
+
+                {/* ✅ Show total contacts once category is selected */}
+                {/* ✅ Show selected category name + total contacts */}
+                {selectedCategory && (
+                  <div className="flex flex-col">
+                    <label className="text-sm text-gray-700 mb-1">
+                      Category Info
+                    </label>
+                    <input
+                      type="text"
+                      readOnly
+                      value={`${selectCategories.find(cat => cat.value == selectedCategory)?.label || ""} - ${contactNumbers.length} Contacts`}
+                      className="w-full border border-gray-300 rounded-md p-2 bg-gray-50 text-gray-700 font-medium"
+                    />
+                  </div>
+                )}
               </div>
             ) : (
               <textarea
@@ -247,11 +347,11 @@ s
               return (
                 <div
                   key={compIndex}
-                  className="p-4 bg-white border rounded-xl mb-4"
+                // className="p-4 bg-white border rounded-xl mb-4"
                 >
-                  <p className="text-sm mb-2 font-medium text-gray-600">
-                    Type: {comp.type} | Format: {comp.format || "TEXT"}
-                  </p>
+                  {/* <p className="text-sm mb-2 font-medium text-gray-600">
+                    Type: {comp.type} 
+                  </p> */}
 
                   {matches.map((_, paramIndex) => (
                     <input
@@ -280,8 +380,8 @@ s
                           format === "image"
                             ? "image/*"
                             : format === "video"
-                            ? "video/*"
-                            : ".pdf,.doc,.docx"
+                              ? "video/*"
+                              : ".pdf,.doc,.docx"
                         }
                         onChange={(e) => setHeaderMediaFile(e.target.files[0])}
                         className="block w-full text-sm border border-gray-300 rounded-md p-2"
@@ -294,17 +394,109 @@ s
           </div>
         </div>
 
-        <div className="w-full xl:w-[400px] h-[570px] bg-gray-100 rounded-2xl p-4 flex flex-col justify-between">
+        {/* <div className="w-full xl:w-[400px] h-[470px] bg-gray-100 rounded-2xl p-4 flex flex-col justify-between">
+       
+
           <div className="bg-white p-4 rounded-2xl rounded-bl-none mb-4">
-            <p className="text-sm">This is a preview area.</p>
-            <p className="text-end text-xs mt-2">{currentTime}</p>
+     
+            {headerMediaFile &&
+              ["image", "video"].includes(
+                templatelist[selectedIndex]?.components.find((c) => c.type === "HEADER")?.format?.toLowerCase()
+              ) && (
+                <div className="mb-3">
+                  {templatelist[selectedIndex].components.find((c) => c.type === "HEADER")?.format?.toLowerCase() === "image" ? (
+                    <img
+                      src={URL.createObjectURL(headerMediaFile)}
+                      alt="Preview"
+                      className="w-full h-auto rounded-md"
+                    />
+                  ) : (
+                    <video
+                      src={URL.createObjectURL(headerMediaFile)}
+                      controls
+                      className="w-full h-auto rounded-md"
+                    />
+                  )}
+                </div>
+              )}
+
+            {templatelist[selectedIndex]?.components.map((comp, compIndex) => {
+              const matches = comp.text?.match(/{{\d+}}/g) || [];
+              const format = (comp.format || "").toLowerCase();
+
+              return (
+                <div key={compIndex}>
+                  {comp.type !== "FOOTER" && comp.type !== "BUTTONS" && (
+                    <div>
+                      <p className="text-sm mb-2 font-medium text-gray-600">
+                        {comp.text}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <div>
+
           </div>
           <Button
             text="Send Bulk Message"
+            className="mt-7"
             onClick={Handlee}
             icon={<FaMessage className="text-white text-sm" />}
           />
+          <ToastContainer />
+        </div> */}
+
+        <div className="w-full sm:w-[300px] lg:w-[350px] xl:w-[400px] bg-gray-100 rounded-2xl p-4 flex flex-col justify-between">
+  <div className="bg-white p-4 rounded-2xl rounded-bl-none mb-4 max-h-[400px] overflow-y-auto scrollbar-hide no-scrollbar">
+    {/* ✅ Media Preview on Top */}
+    {headerMediaFile &&
+      ["image", "video"].includes(
+        templatelist[selectedIndex]?.components.find((c) => c.type === "HEADER")?.format?.toLowerCase()
+      ) && (
+        <div className="mb-3">
+          {templatelist[selectedIndex].components.find((c) => c.type === "HEADER")?.format?.toLowerCase() === "image" ? (
+            <img
+              src={URL.createObjectURL(headerMediaFile)}
+              alt="Preview"
+              className="w-full h-auto rounded-md object-contain"
+            />
+          ) : (
+            <video
+              src={URL.createObjectURL(headerMediaFile)}
+              controls
+              className="w-full h-auto rounded-md"
+            />
+          )}
         </div>
+      )}
+
+    {/* ✅ Existing template text rendering */}
+    {templatelist[selectedIndex]?.components.map((comp, compIndex) => (
+      <div key={compIndex}>
+        {comp.type !== "FOOTER" && comp.type !== "BUTTONS" && (
+          <div>
+            <p className="text-sm mb-2 font-medium text-gray-600 break-words">
+              {comp.text}
+            </p>
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+
+  <Button
+    text="Send Bulk Message"
+    className="mt-4 w-full"
+    onClick={Handlee}
+    icon={<FaMessage className="text-white text-sm" />}
+  />
+  <ToastContainer />
+</div>
+
       </div>
     </div>
   );

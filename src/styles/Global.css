@@ -42,3 +42,8 @@
 .font {
   font-family: 'Satoshi', sans-serif;
 }
+
+
+.border_style {
+  @apply focus:border-[#905CC1] outline-none focus:ring-1 focus:ring-[#905CC1];
+}
