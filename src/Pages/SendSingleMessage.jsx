@@ -17,17 +17,17 @@ export default function SendSingleMessage() {
   const [headerType, setHeaderType] = useState("");
   const [responseMessage, setResponseMessage] = useState(null);
   const { userId, role } = useAuth()
-    const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchTemplates = async () => {
 
       const templates = await SelectTemplate(userId);
-      console.log("templates",templates);
-      
+      console.log("templates", templates);
+
       setTemplateList(templates || []);
     };
     fetchTemplates();
-    
+
   }, []);
 
 
@@ -56,7 +56,7 @@ export default function SendSingleMessage() {
   const HandleSendSingleMsg = async () => {
 
     const tmpl = templateList[selectedIndex];
-setLoading(true); 
+    setLoading(true);
     const formData = new FormData();
     formData.append("to", number);
     formData.append("template", tmpl.name);
@@ -148,25 +148,25 @@ setLoading(true);
     if (hasHeaderMedia && headerMedia instanceof File) {
       formData.append("header_type", detectedHeaderFormat);
       formData.append("header_media", headerMedia);
-       console.log("📤 header_type:", detectedHeaderFormat);
-  console.log("📤 header_media:", {
-    name: headerMedia.name,
-    size: `${(headerMedia.size / 1024).toFixed(2)} KB`,
-    type: headerMedia.type,
-  });
+      console.log("📤 header_type:", detectedHeaderFormat);
+      console.log("📤 header_media:", {
+        name: headerMedia.name,
+        size: `${(headerMedia.size / 1024).toFixed(2)} KB`,
+        type: headerMedia.type,
+      });
     }
     console.log(formData);
 
     try {
       const res = await SendSingleMsgs(userId, formData);
       console.log(res, "%%%%");
-toast.success("Message sent successfully!");
+      toast.success("Message sent successfully!");
       setResponseMessage(" Message sent successfully!");
 
     } catch (e) {
       setResponseMessage(" Failed to send message.");
       debugLog("SendSingleMsgs Error:", e.response?.data || e.message);
-    }finally {
+    } finally {
       setLoading(false); // Stop loader
     }
   };
@@ -205,80 +205,276 @@ toast.success("Message sent successfully!");
           </div>
         </div>
 
+
+
+        {/* {selectedTemplate && (
+  <div className="space-y-4 mt-6">
+    <h2 className="text-lg font-semibold">Template Components:</h2>
+
+    {selectedTemplate.components
+      .filter(
+        (comp) =>
+          comp.type !== "FOOTER" && comp.type !== "BUTTONS" // Exclude FOOTER and BUTTONS
+      )
+      .map((comp, compIndex) => {
+        const matches = comp.text?.match(/{{\d+}}/g) || [];
+
+        return (
+          <div
+            key={compIndex}
+            className="p-4 bg-gray-50 border border-gray-100 rounded-2xl"
+          >
+            <p className="text-sm mb-2">{comp.text}</p>
+
+           
+            {(comp.type === "BODY" ||
+              (comp.type === "HEADER" && comp.format === "TEXT")) &&
+              matches.map((_, paramIndex) => (
+                <input
+                  key={paramIndex}
+                  type="text"
+                  placeholder={`Param ${paramIndex + 1}`}
+                  value={params[`${compIndex}_${paramIndex}`] || ""}
+                  onChange={(e) =>
+                    handleParamChange(compIndex, paramIndex, e.target.value)
+                  }
+                  className="block w-full mt-2 p-2 border rounded-md"
+                />
+              ))}
+
+           
+            {comp.type === "HEADER" &&
+              ["IMAGE", "DOCUMENT", "VIDEO"].includes(comp.format) && (
+                <div className="mt-3">
+                  <label className="block text-sm mb-1">
+                    Upload {comp.format}
+                  </label>
+                  <input
+                    type="file"
+                    accept={
+                      comp.format === "IMAGE"
+                        ? "image/*"
+                        : comp.format === "VIDEO"
+                        ? "video/*"
+                        : ".pdf,.doc,.docx"
+                    }
+                    onChange={(e) =>
+                      handleFileChange(e.target.files[0], comp.format)
+                    }
+                    className="block w-full text-sm border border-gray-300 rounded-md p-2"
+                  />
+                </div>
+              )}
+          </div>
+        );
+      })}
+
+    <button
+      type="submit"
+      onClick={HandleSendSingleMsg}
+      className="w-full h-[45px] flex items-center justify-center gap-2 text-white bg-[#905CC1] rounded-sm hover:bg-[#7a3fb8] transition"
+    >
+      {loading ? (
+        <ClipLoader size={24} color="#fff" />
+      ) : (
+        <>
+          <FiSend className="text-white text-sm" />
+          Send
+        </>
+      )}
+    </button>
+
+    <ToastContainer />
+  </div>
+)} */}
+
+
         {selectedTemplate && (
           <div className="space-y-4 mt-6">
             <h2 className="text-lg font-semibold">Template Components:</h2>
-            {selectedTemplate.components.map((comp, compIndex) => {
-              const matches = comp.text?.match(/{{\d+}}/g) || [];
 
-              return (
-                <div
-                  key={compIndex}
-                  className="p-4 bg-gray-50 border border-gray-100 rounded-2xl"
-                >
-                 
+            {selectedTemplate.components
+              .filter(
+                (comp) =>
+                  comp.type !== "FOOTER" && comp.type !== "BUTTONS" // Exclude FOOTER and BUTTONS
+              )
+              .map((comp, compIndex) => {
+                const matches = comp.text?.match(/{{\d+}}/g) || [];
 
-                  {(comp.type === "BODY" ||
-                    (comp.type === "HEADER" && comp.format === "TEXT")) &&
-                    matches.map((_, paramIndex) => (
-                      <input
-                        key={paramIndex}
-                        type="text"
-                        placeholder={`Param ${paramIndex + 1}`}
-                        value={params[`${compIndex}_${paramIndex}`] || ""}
-                        onChange={(e) =>
-                          handleParamChange(
-                            compIndex,
-                            paramIndex,
-                            e.target.value
-                          )
-                        }
-                        className="block w-full mt-2 p-2 border rounded-md"
-                      />
-                    ))}
+                return (
+                  <div
+                    key={compIndex}
+                    className="p-4 bg-gray-50 border border-gray-100 rounded-2xl"
+                  >
+                    {/* Show preview if HEADER with file */}
 
-                  {comp.type === "HEADER" &&
-                    ["IMAGE", "DOCUMENT", "VIDEO"].includes(comp.format) && (
-                      <div className="mt-3">
-                        <label className="block text-sm mb-1">
-                          Upload {comp.format}
-                        </label>
-                        <input
-                          type="file"
-                          accept={
-                            comp.format === "IMAGE"
-                              ? "image/*"
-                              : comp.format === "VIDEO"
-                                ? "video/*"
-                                : ".pdf,.doc,.docx"
-                          }
-                          onChange={(e) =>
-                            handleFileChange(e.target.files[0], comp.format)
-                          }
-                          className="block w-full text-sm border border-gray-300 rounded-md p-2"
-                        />
-                      </div>
-                    )}
+
+                    {/* Component text */}
+                    <p className="text-sm mb-2">{comp.text}</p>
+
+                    {/* Parameter inputs for BODY or TEXT HEADER */}
+                    {/* {(comp.type === "BODY" ||
+              (comp.type === "HEADER" && comp.format === "TEXT")) &&
+              matches.map((_, paramIndex) => (
+                <input
+                  key={paramIndex}
+                  type="text"
+                  placeholder={`Param ${paramIndex + 1}`}
+                  value={params[`${compIndex}_${paramIndex}`] || ""}
+                  onChange={(e) =>
+                    handleParamChange(compIndex, paramIndex, e.target.value)
+                  }
+                  className="block w-full mt-2 p-2 border rounded-md"
+                />
+              ))}
+                   {comp.type === "HEADER" && comp.file && (
+              <div className="mb-3">
+                {comp.format === "IMAGE" && (
+                  <img
+                    src={URL.createObjectURL(comp.file)}
+                    alt="Preview"
+                    className="w-full h-40 object-cover rounded-lg border"
+                  />
+                )}
+                {comp.format === "VIDEO" && (
+                  <video
+                    controls
+                    className="w-full h-40 rounded-lg border"
+                  >
+                    <source
+                      src={URL.createObjectURL(comp.file)}
+                      type="video/mp4"
+                    />
+                  </video>
+                )}
+                {comp.format === "DOCUMENT" && (
+                  <p className="text-sm text-gray-700">
+                    📄 {comp.file.name}
+                  </p>
+                )}
+              </div>
+            )} */}
+
+                    {/* File upload for IMAGE, VIDEO, DOCUMENT headers */}
+                    {/* {comp.type === "HEADER" &&
+              ["IMAGE", "DOCUMENT", "VIDEO"].includes(comp.format) && (
+                <div className="mt-3">
+                  <label className="block text-sm mb-1">
+                    Upload {comp.format}
+                  </label>
+                  <input
+                    type="file"
+                    accept={
+                      comp.format === "IMAGE"
+                        ? "image/*"
+                        : comp.format === "VIDEO"
+                        ? "video/*"
+                        : ".pdf,.doc,.docx"
+                    }
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      handleFileChange(file, comp.format);
+
+                      // Save file reference to comp for preview
+                      comp.file = file;
+                    }}
+                    className="block w-full text-sm border border-gray-300 rounded-md p-2"
+                  />
                 </div>
-              );
-            })}
+              )} */}
 
-           <button
-  type="submit"
-  onClick={HandleSendSingleMsg}
-  className="w-full h-[45px] flex items-center justify-center gap-2 text-white bg-[#905CC1] rounded-sm hover:bg-[#7a3fb8] transition"
->
-  {loading ? (
-    <ClipLoader size={24} color="#fff" />
-  ) : (
-    <>
-      <FiSend className="text-white text-sm" />
-      Send
-    </>
-  )}
-</button>
 
-             <ToastContainer />
+                    {comp.type === "BODY" ||
+                      (comp.type === "HEADER" && comp.format === "TEXT") ? (
+                      // ✅ Param input
+                      matches.map((_, paramIndex) => (
+                        <input
+                          key={paramIndex}
+                          type="text"
+                          placeholder={`Param ${paramIndex + 1}`}
+                          value={params[`${compIndex}_${paramIndex}`] || ""}
+                          onChange={(e) =>
+                            handleParamChange(compIndex, paramIndex, e.target.value)
+                          }
+                          className="block w-full mt-2 p-2 border rounded-md"
+                        />
+                      ))
+                    ) : null}
+
+                    {/* ✅ HEADER with IMAGE / VIDEO / DOCUMENT */}
+                    {comp.type === "HEADER" &&
+                      ["IMAGE", "DOCUMENT", "VIDEO"].includes(comp.format) && (
+                        <div className="mt-3">
+                          <label className="block text-sm mb-1">
+                            Upload {comp.format}
+                          </label>
+                          <input
+                            type="file"
+                            accept={
+                              comp.format === "IMAGE"
+                                ? "image/*"
+                                : comp.format === "VIDEO"
+                                  ? "video/*"
+                                  : ".pdf,.doc,.docx"
+                            }
+                            onChange={(e) => {
+                              const file = e.target.files[0];
+                              handleFileChange(file, comp.format);
+
+                              // Save file reference for preview
+                              comp.file = file;
+                            }}
+                            className="block w-full text-sm border border-gray-300 rounded-md p-2"
+                          />
+
+                          {/* ✅ Preview immediately under input */}
+                          {comp.file && (
+                            <div className="mt-2">
+                              {comp.format === "IMAGE" && (
+                                <img
+                                  src={URL.createObjectURL(comp.file)}
+                                  alt="Preview"
+                                  className="w-full h-40 object-cover rounded-lg border"
+                                />
+                              )}
+                              {comp.format === "VIDEO" && (
+                                <video controls className="w-full h-40 rounded-lg border">
+                                  <source
+                                    src={URL.createObjectURL(comp.file)}
+                                    type="video/mp4"
+                                  />
+                                </video>
+                              )}
+                              {comp.format === "DOCUMENT" && (
+                                <p className="text-sm text-gray-700">
+                                  📄 {comp.file.name}
+                                </p>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                  </div>
+                );
+              })}
+
+            <button
+              type="submit"
+              onClick={HandleSendSingleMsg}
+              className="w-full h-[45px] flex items-center justify-center gap-2 text-white bg-[#905CC1] rounded-sm hover:bg-[#7a3fb8] transition"
+            >
+              {loading ? (
+                <ClipLoader size={24} color="#fff" />
+              ) : (
+                <>
+                  <FiSend className="text-white text-sm" />
+                  Send
+                </>
+              )}
+            </button>
+
+            <ToastContainer />
           </div>
         )}
 

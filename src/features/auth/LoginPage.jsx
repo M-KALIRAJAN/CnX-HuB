@@ -19,20 +19,27 @@ export default function LoginPage() {
 
   const navigate = useNavigate();
   const { login } = useAuth();
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     const newErrors = {};
 
-    // Manual validation
-    if (!email.trim()) {
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    // Email validation
+    if (!trimmedEmail) {
       newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
       newErrors.email = "Invalid email format";
     }
 
-    if (!password.trim()) {
+    // Password validation
+    if (!trimmedPassword) {
       newErrors.password = "Password is required";
+    } else if (trimmedPassword.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
     }
 
     setErrors(newErrors);
@@ -43,15 +50,11 @@ export default function LoginPage() {
     }
 
     try {
-      const response = await loginAPI(email, password);
+      const response = await loginAPI(trimmedEmail, trimmedPassword);
 
       if (response?.status === "success") {
-        const { user_id, name, role } = response;
-        console.log("data", response);
-
-        // Save to context
-        login(user_id, name);
-
+        const { user_id, name } = response;
+        login(user_id, name); // Save user info in context
         navigate("/Performance-Hub");
       } else {
         setErrors({ general: response?.message || "Login failed" });
@@ -67,6 +70,9 @@ export default function LoginPage() {
   const goToCreateAccount = () => {
     navigate("/Register");
   };
+  const ForgetPassword = () =>{
+navigate("/ForgotPassword")
+  }
 
   return (
     <div className="flex gap-5 justify-around items-center min-h-screen bg-gray-100 px-4">
@@ -93,15 +99,22 @@ export default function LoginPage() {
           </div>
 
           <h2 className="text-[18px] font-bold mb-6 text-center">
-            WELCOME TO CNX-HUB LOGIN NOW !
+            WELCOME TO CNX-HUB LOGIN NOW!
           </h2>
+
+          {/* General error */}
+          {errors.general && (
+            <p className="text-red-500 text-sm mb-2 text-center">
+              {errors.general}
+            </p>
+          )}
 
           {/* Email */}
           <Inputs
             label="Email"
             name="Email"
             type="email"
-            placeholder="Enter the Email"
+            placeholder="Enter your Email"
             value={email}
             onChange={setEmail}
             externalError={errors.email}
@@ -113,7 +126,7 @@ export default function LoginPage() {
               label="Password"
               name="Password"
               type={showPassword ? "text" : "password"}
-              placeholder="Enter the Password"
+              placeholder="Enter your Password"
               value={password}
               onChange={setPassword}
               externalError={errors.password}
@@ -124,26 +137,27 @@ export default function LoginPage() {
             >
               {showPassword ? <BsFillEyeFill /> : <BsFillEyeSlashFill />}
             </span>
-            <div className=" text-end">
- <h2
-              className="text-sm text-[#905CC1] hover:underline cursor-pointer font-medium"
-              // onClick={goToCreateAccount}
-            >
-              <span>Forget Password ?</span> 
-            </h2>
+            <div className="text-end">
+              <h2
+                className="text-sm text-[#905CC1] hover:underline cursor-pointer font-medium"
+  
+                onClick={ForgetPassword}
+              >
+                Forget Password?
+              </h2>
             </div>
-            
           </div>
 
-          {/* Submit */}
+          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full h-[45px] text-white bg-[#905CC1] rounded-sm hover:bg-[#7a3fb8] transition mt-4 flex items-center justify-center"
+            disabled={loading}
+            className={`w-full h-[45px] text-white bg-[#905CC1] rounded-sm hover:bg-[#7a3fb8] transition mt-4 flex items-center justify-center ${
+              loading ? "opacity-70 cursor-not-allowed" : ""
+            }`}
           >
             {loading ? <ClipLoader size={24} color="#fff" /> : "Login"}
           </button>
-
-
 
           {/* Register link */}
           <div className="text-center mt-5">
@@ -151,7 +165,7 @@ export default function LoginPage() {
               className="text-sm text-[#905CC1] hover:underline cursor-pointer font-medium"
               onClick={goToCreateAccount}
             >
-              <span>New User?</span> Create Account
+              New User? Create Account
             </h2>
           </div>
         </form>

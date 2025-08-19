@@ -83,13 +83,13 @@ export default function SupportTicket() {
         </div>
       </div>
 
-      <div className="w-full sm:w-[200px]">
+      {/* <div className="w-full sm:w-[200px]">
         <SelectInput
           options={templateOptions}
           defaultValue="Select Category"
           onChange={(e) => console.log(e.target.value)}
         />
-      </div>
+      </div> */}
     </div>
 
     {/* Right Side - Create Ticket */}

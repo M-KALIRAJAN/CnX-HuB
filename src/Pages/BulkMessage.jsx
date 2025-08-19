@@ -475,21 +475,39 @@ const Handlee = async () => {
       )}
 
     {/* ✅ Existing template text rendering */}
-    {templatelist[selectedIndex]?.components.map((comp, compIndex) => (
+    {/* {templatelist[selectedIndex]?.components.map((comp, compIndex) => (
       <div key={compIndex}>
         {comp.type !== "FOOTER" && comp.type !== "BUTTONS" && (
           <div>
-            <p className="text-sm mb-2 font-medium text-gray-600 break-words">
+            <p className="text-sm mb-2 font-bold text-gray-600 break-words">
               {comp.text}
             </p>
           </div>
         )}
       </div>
-    ))}
+    ))} */}
+    {selectedIndex === null || !templatelist[selectedIndex] ? (
+  <p className="text-gray-400 italic text-sm text-center py-4">
+    No template selected
+  </p>
+) : (
+  templatelist[selectedIndex]?.components.map((comp, compIndex) => (
+    <div key={compIndex}>
+      {comp.type !== "FOOTER" && comp.type !== "BUTTONS" && (
+        <div>
+          <p className="text-sm mb-2 font-bold text-gray-600 break-words">
+            {comp.text}
+          </p>
+        </div>
+      )}
+    </div>
+  ))
+)}
+
   </div>
 
   <Button
-    text="Send Bulk Message"
+    text="Sent Bulk Message"
     className="mt-4 w-full"
     onClick={Handlee}
     icon={<FaMessage className="text-white text-sm" />}

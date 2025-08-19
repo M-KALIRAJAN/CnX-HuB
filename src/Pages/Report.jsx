@@ -50,7 +50,7 @@ useEffect(() => {
 
 
   return (
-    <div className="border border-gray-400 h-auto w-full p-3 rounded-2xl" data-aos="zoom-in" data-aos-duration="1000">
+    <div className="border border-gray-400 h-auto w-full p-3 rounded-2xl"  data-aos-duration="1000">
      <div className="flex flex-col lg:flex-row flex-wrap justify-between gap-4 items-center">
   {/* Inputs */}
   <div className="flex flex-col md:flex-row flex-wrap gap-4 flex-grow w-full">

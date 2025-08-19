@@ -120,7 +120,7 @@ export default function Sidebar() {
                   <div className="w-10 h-10 bg-white flex items-center justify-center rounded-full shadow-sm">
                     <img src={Send} alt="Send" className="w-5 h-5" />
                   </div>
-                  <p className=" font-medium">Send</p>
+                  <p className=" font-medium">Sent</p>
                 </div>
 
                 <div

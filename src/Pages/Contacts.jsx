@@ -9,10 +9,10 @@ import Table from "../utils/Table";
 import { useNavigate } from "react-router-dom";
 export default function Contacts() {
   const Recpicent = [
-    { value: "Use Control List", label: "Normal Template" },
-    { value: "+1", label: "+1" },
-    { value: "+44", label: "+44" },
-    { value: "+61", label: "+61" },
+    { value: "Use Control List", label: "Filter the Contact" },
+    { value: "Category", label: "Category" },
+    { value: "File Name", label: "File Name" },
+   
   ];
    const headers = ["File Name", "Category", "Uploaded at", "Actions",];
    const columns = ["filename", "category", "uploaded", "action",];

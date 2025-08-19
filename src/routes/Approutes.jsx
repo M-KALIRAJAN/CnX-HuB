@@ -12,6 +12,7 @@ import UserManagement from "../components/Super_Admin_Page/UserManagement";
 import AccountDetails from "../components/Super_Admin_Page/AccountDetails";
 import UserActivityLog from "../components/Super_Admin_Page/UserActivityLog";
 import UserAccessControl from "../components/Super_Admin_Page/UserAccessControl";
+import Passwordchange from "../features/Passwordchange";
 
 // Lazy load all pages/components
 const Maduralayout = lazy(() => import("../layout/Maduralayout"));
@@ -108,6 +109,14 @@ export default function Approutes() {
                 <Maduralayout>
                   <TemplateLibrary />
                 </Maduralayout>
+              }
+            />
+               <Route
+              path="/ForgotPassword"
+              element={
+               
+                  <Passwordchange />
+               
               }
             />
             <Route

@@ -72,7 +72,7 @@ export default function DashboardPage() {
       <div className="flex flex-col  lg:flex-row gap-3 lg:gap-5 justify-around items-center rounded-3xl bg-[#F8F8F8] p-3 h-auto lg:h-[157px]">
         {/* Left */}
         <Card
-          text="Total Send"
+          text="Total Sent"
           count={status_summary.total_sent || 0}
           image={Totalsent}
           bgColor="bg-[#B3D0FF]"
@@ -139,11 +139,11 @@ export default function DashboardPage() {
       <div className="bg-white rounded-2xl shadow-md p-4 space-y-4">
 
         {/* Wallet Balance */}
-        <InfoCard
+        {/* <InfoCard
           icon={<FaWallet className="text-[#9B5CE0] text-xl" />}
           label="Wallet Balance"
           value={`₹${wallet_balance}`}
-        />
+        /> */}
 
         {/* Templates */}
         <InfoCard

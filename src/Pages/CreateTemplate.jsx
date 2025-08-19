@@ -17,6 +17,7 @@ import axios from "axios";
 import { debugLog } from "../utils/debugLog";
 import { useAuth } from "../context/AuthContext";
 import { ToastContainer, toast } from 'react-toastify';
+import User from "../assets/user.png";
 export default function CreateTemplate() {
   const [header_format, setHeader_Format] = useState("TEXT");
   const [language, setLanguage] = useState("");
@@ -187,14 +188,14 @@ const { userId ,role  } = useAuth()
                   <span className="text-red-700">*</span> English
                 </p>
               </div>
-              <div className="mt-5 lg:mt-6 w-full lg:w-[220px]">
+              {/* <div className="mt-5 lg:mt-6 w-full lg:w-[220px]">
                 <SelectInput
                   options={Language}
                   defaultValue="add Language"
                   value={language}
                   onChange={handleLanguageChange}
                 />
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -385,13 +386,15 @@ const { userId ,role  } = useAuth()
         >
           <div className="flex justify-between items-center">
             <div className="gap-4 flex items-center">
-              <div className="iconbackground" />
+              <img src={User} alt="User" className="w-8 h-8 rounded-full" />
+
+              {/* <div className="iconbackground" /> */}
               <h2>Bussiness Account</h2>
             </div>
             <BsThreeDotsVertical />
           </div>
 
-          <div className="mt-7 p-3 bg-white overflow-hidden flex-wrap rounded-3xl rounded-bl-none">
+          {/* <div className="mt-7 p-3 bg-white overflow-hidden flex-wrap rounded-3xl rounded-bl-none">
             <p className="font-bold">{name}</p>
             <p>{headerText}</p>
             <p>{body_text}</p>
@@ -404,8 +407,31 @@ const { userId ,role  } = useAuth()
                 Call Now: {phoneNumber}
               </p>
             )}
-            <p className="text-end">{currentTime}</p>
-          </div>
+            
+          </div> */}
+          <div className="mt-7 p-3 bg-white overflow-hidden flex-wrap rounded-3xl rounded-bl-none">
+  {name || headerText || body_text || footer_text || phoneNumber || header_media ? (
+    <>
+      {name && <p className="font-bold">{name}</p>}
+      {headerText && <p>{headerText}</p>}
+      {body_text && <p>{body_text}</p>}
+      {header_media && (
+        <p className="text-gray-500 text-sm">File: {header_media.name}</p>
+      )}
+      {footer_text && <p className="text-gray-600">{footer_text}</p>}
+      {phoneNumber && (
+        <p className="border px-4 py-1 bg-gray-400 border-gray-400 rounded-2xl w-[200px]">
+          Call Now: {phoneNumber}
+        </p>
+      )}
+    </>
+  ) : (
+    <p className="text-gray-400 italic text-center py-4">
+      Create Template
+    </p>
+  )}
+</div>
+
         </div>
       </div>
     </div>
