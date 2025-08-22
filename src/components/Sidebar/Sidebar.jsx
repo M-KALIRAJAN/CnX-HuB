@@ -152,7 +152,7 @@ export default function Sidebar() {
                       ? "bg-[#905CC1] text-white"
                       : "text-[#59565C] hover:bg-[#F4F0FA]"}`}
                   >
-                    <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm">
+                    <div className="w-11 h-9 bg-white rounded-full flex items-center justify-center shadow-sm">
                       <LuMessageCircleMore className="text-[#905CC1]" size={20} />
                     </div>
                     <span className="text-sm ">Single Send Message</span>

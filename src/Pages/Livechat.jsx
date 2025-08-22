@@ -327,6 +327,8 @@ export default function Livechat() {
   useEffect(() => {
     const fetchData = async () => {
       const res = await LiveChat(userId);
+      console.log("res",res);
+      
       if (res && res.phone_list) setMessage(res.phone_list);
     };
     fetchData();

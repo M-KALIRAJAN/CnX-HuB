@@ -429,16 +429,16 @@ export default function SendSingleMessage() {
 
                           {/* ✅ Preview immediately under input */}
                           {comp.file && (
-                            <div className="mt-2">
+                            <div className="mt-2 flex justify-center">
                               {comp.format === "IMAGE" && (
                                 <img
                                   src={URL.createObjectURL(comp.file)}
                                   alt="Preview"
-                                  className="w-full h-40 object-cover rounded-lg border"
+                                  className="w-full h-60 object-fit rounded-lg border"
                                 />
                               )}
                               {comp.format === "VIDEO" && (
-                                <video controls className="w-full h-40 rounded-lg border">
+                                <video controls className="w-full h-60 rounded-lg border">
                                   <source
                                     src={URL.createObjectURL(comp.file)}
                                     type="video/mp4"
