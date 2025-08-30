@@ -258,7 +258,7 @@ export default function App() {
 
           {/* Bot Avatar */}
           <div>
-            <p className="font-medium text-gray-800 mb-2">Bot Avatar</p>
+            <h2 className="font-medium text-gray-800 mb-2">Bot Avatar</h2>
             <Inputs
               type="file"
               placeholder="Upload Avatar"
