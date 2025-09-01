@@ -222,7 +222,7 @@ export default function App() {
         <div className="space-y-6">
           {/* Bot Name */}
           <div>
-            <h3 className="font-medium text-gray-800 mb-1">Bot Name</h3>
+            <p className="font-medium text-gray-800 mb-1">Bot Name</p>
             <Inputs
               type="text"
               placeholder="Enter Bot Name"
