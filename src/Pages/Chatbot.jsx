@@ -302,9 +302,9 @@ export default function App() {
             alt="Person"
             className="h-[60px] w-[60px] rounded-full object-cover"
           />
-          <h3 className="text-gray-700 text-sm">
+          <p className="text-gray-700 text-sm">
             This is a placeholder for the right sidebar content.
-          </h3>
+          </p>
         </div>
       </div>
     </div>
