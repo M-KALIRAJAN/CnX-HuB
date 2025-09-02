@@ -55,9 +55,9 @@ export default function PasswordChange() {
                <div className="flex justify-center mb-3">
                         <img src={logo} className="h-[80px] w-[120px]" alt="logo" />
                       </div>
-          <h2 className="text-[18px] font-bold mb-6 text-center">
+          <p className="text-[18px] font-bold mb-6 text-center">
             Change Your Password
-          </h2>
+          </p>
 
           {/* Step 1: Email Input */}
           <Inputs
